@@ -1,0 +1,25 @@
+     MMM je z†bavnò vòukovò program pro pr†ci s textem.  Vyskytuj° se v nàm
+objekty ái jevy ze souáasnosti  (ZèHADA s detektivn° z†pletkou),  poh†dkovÇ
+minulosti (nap©. trpasl°ci, v°ly, sk©°tci, up°©i apod.) i budoucnosti (p©enos
+hmoty).  Poá°taá V†m p©edkl†d† rñznÇ situace a vy na nà reagujete.  TypickÇ
+p©°kazy jsou nap©.  JãT SEVERNâ,  ROZHLêDNOUT SE,  JãT VPRAVO,  POSLOUCHAT,
+DãVAT SE NA ..., VZãT ..., ODLOíIT ..., VùBAVA, atd. Slovn°k poá°taáe obsahuje
+nàkolik set vòrazñ, kterÇ mñëete p©i dostateánÇ pozornosti poznat, budete-li
+s poá°taáem p©imà©enà komunikovat.
+     V®echny Va®e akce jsou bodov†ny; c°lem hry je z°skat  co nejv°ce  bodñ.
+Vòsledkem je hodnocen° od ëalostnÇho detektiva aë po supermana (12 kategori°).
+Pokud se V†m  poda©° vy©e®it  v®echny z†hady  tajuplnÇho z†mku  (zjistit vraha
+a odevzdat ho policii, proniknout k pokladu a naj°t klenoty, diamanty a dal®°
+cennosti, atd.) a ve zdrav° se vr†tit, z°sk†te nejen body, ale uráità ani bàën†
+pr†ce s poá°taáem pro V†s pak nebude problÇmem. Situace a objekty v prñbàhu
+©e®en° vyuë°vejte samoz©ejmà tak, jak to jde - nap©. se mñëete £áinnà br†nit
+p©i napaden°, m†te-li ve vòbavà nàjakou zbra§.
+     Nebudete-li cht°t ve h©e pokraáovat, p©°kaz KONEC hru ukoná°. P©edt°m
+si ov®em mñëete zaznamenat stav hry p©°kazem ZAPSAT a p©°®tà, aë budete m°t
+chuü se k MMM vr†tit, se p©°kazem OBNOVIT dostanete tam, kde jste skonáili.
+Dal®° uëiteán† slova, kter† V†m doporuá°me, jsou POMOC, ZAZNAMENAT KLãÄE a
+SKïRE.A malò dodatek:l=vlevo,p=vpravo,f=vp©ed,b=vzad,v=vòchod,z=z†pad,s=sever,
+j=jih,jit=jit.
+
+
+
