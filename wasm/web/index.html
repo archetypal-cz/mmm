@@ -40,6 +40,8 @@
   aside h2 { font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; color: var(--dim);
     margin: 1rem 0 .4rem; font-weight: 600; }
   aside h2:first-child { margin-top: 0; }
+  aside .sec > h2:first-child { margin-top: 1rem; }
+  aside .sec:first-child > h2:first-child { margin-top: 0; }
   .savename { width: 8rem; font: inherit; font-size: .82rem; background: #0f1513; color: var(--fg);
     border: 1px solid #2a3a33; border-radius: .35rem; padding: .2rem .45rem; }
   .saverow { align-items: center; margin-top: .35rem; }
@@ -184,7 +186,11 @@
   @media (max-width: 52rem) {
     .app { grid-template-columns: 1fr; grid-template-rows: auto 1fr auto auto;
       grid-template-areas: "head" "screen" "input" "side"; }
-    aside { border-left: none; border-top: 1px solid var(--line); max-height: 40vh; }
+    aside { border-left: none; border-top: 1px solid var(--line); max-height: 40vh;
+      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 1rem; align-content: start; }
+    aside .sec > h2:first-child { margin-top: .7rem; }
+    aside .sec:nth-child(-n+2) > h2:first-child { margin-top: 0; }
+    aside .sec.wide, aside .sec:has(.menu) { grid-column: 1 / -1; }
     .app.both { grid-template-columns: 1fr; grid-template-rows: auto 32vh minmax(0, 1fr) auto auto;
       grid-template-areas: "head" "map" "screen" "input" "side"; }
   }
@@ -555,6 +561,15 @@ function render() {
         `ITST: ${r.join(" ")}` }));
   }
   renderSaves();
+  // one <section> per heading: on phones the panel lays them out in two columns
+  let sec = null;
+  for (const k of [...side.children]) {
+    if (k.tagName === "H2" || !sec) {
+      sec = el("section", { className: "sec" + (/^(Uložené hry|Stav)/.test(k.textContent) ? " wide" : "") });
+      side.append(sec);
+    }
+    sec.append(k);
+  }
   if (!waiting) side.querySelectorAll("button, input").forEach((b) => (b.disabled = true));
 }
 

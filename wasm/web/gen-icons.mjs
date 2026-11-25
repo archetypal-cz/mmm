@@ -1,4 +1,4 @@
-// Icon generator (ASCII-art mansion in the game's terminal look, variant "d" is in use).
+// Icon generator (ASCII-art mansion in the game's terminal look, variant "f" is in use since 2026-11-25: no middle tower, reads as an M; "d" before).
 //   docker run --rm -v "$PWD/wasm/web":/t -v "$PWD/wasm/web":/out -v /c/Windows/Fonts:/fonts:ro \
 //     mcr.microsoft.com/playwright:v1.56.0-noble bash -c "npm i --no-save playwright@1.56.0 >/dev/null && node /t/gen-icons.mjs d /out"
 // Needs CascadiaMono.ttf (OFL) in /fonts.
@@ -35,6 +35,26 @@ __|__|____||__|__|__`,
   /\    /\    /\
  /  \__/  \__/  \
  |‹[]›| ‹[]›  ‹[]› |«[]»|
+ |‹[]›| ‹[]›  ‹[]› |‹[]›|
+ |‹[]›|  _/\_  |‹[]›|
+_|__|__|  |__|__|_`,
+  // e: no middle tower - the roof dips between the two towers, so from afar it reads as an M
+  e: String.raw`
+  |>          |>
+  /\          /\
+ /  \        /  \
+ |‹[]›|\      /|«[]»|
+ |‹[]›| \____/ |‹[]›|
+ |‹[]›| ‹[]›  ‹[]› |‹[]›|
+ |‹[]›|  _/\_  |‹[]›|
+_|__|__|  |__|__|_`,
+  f: String.raw`
+  |>          |>
+  /\          /\
+ /  \        /  \
+ |‹[]›|\      /|«[]»|
+ |‹[]›| \    / |‹[]›|
+ |‹[]›|  \__/  |‹[]›|
  |‹[]›| ‹[]›  ‹[]› |‹[]›|
  |‹[]›|  _/\_  |‹[]›|
 _|__|__|  |__|__|_`,

@@ -7,9 +7,11 @@ net.createServer((c) => { const u = net.connect(8765, "host.docker.internal"); c
 const font = readFileSync("/fonts/CascadiaMono.ttf").toString("base64");
 const serif = readFileSync("/fonts/georgiab.ttf").toString("base64");
 const art = String.raw`  |>          |>
-  /\    /\    /\
- /  \__/  \__/  \
- |‹[]›| ‹[]›  ‹[]› |«[]»|
+  /\          /\
+ /  \        /  \
+ |‹[]›|\      /|«[]»|
+ |‹[]›| \    / |‹[]›|
+ |‹[]›|  \__/  |‹[]›|
  |‹[]›| ‹[]›  ‹[]› |‹[]›|
  |‹[]›|  _/\_  |‹[]›|
 _|__|__|  |__|__|_`;
