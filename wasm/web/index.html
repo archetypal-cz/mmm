@@ -164,7 +164,11 @@
   #choose { position: fixed; inset: 0; z-index: 10; background: #070b09ee; display: none;
     align-items: center; justify-content: center; padding: 1rem; }
   #choose.show { display: flex; }
-  #choose .box { max-width: 46rem; }
+  #choose .box { max-width: 46rem; max-height: 100%; overflow-y: auto; }
+  #choose .intro { margin-bottom: 1.6rem; }
+  #choose .intro .title { font-size: 1.6rem; color: var(--you); letter-spacing: .02em; margin-bottom: .6rem; }
+  #choose .intro p { color: var(--fg); font-size: .95rem; line-height: 1.6; margin: 0 0 .6rem; }
+  #choose .intro a { color: var(--hot); }
   #choose h1 { font-size: 1.3rem; color: var(--you); margin: 0 0 1rem; }
   #choose .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
   #choose button { display: flex; flex-direction: column; justify-content: flex-start; text-align: left; font: inherit; color: var(--fg); background: #121a17; border: 1px solid #2a3a33;
@@ -218,13 +222,25 @@
 </div>
 <div id="choose" role="dialog" aria-modal="true" aria-labelledby="choose-h">
   <div class="box">
+    <div class="intro">
+      <div class="title">Magical Mystery Mansion</div>
+      <p>Textová detektivka z doby, kdy se na počítač psalo a on odpovídal jen slovy.
+        Žádná grafika: strašidelný zámek, mrtvola, vrah i poklad jsou jen ve větách, které
+        čtete, a v příkazech, které napíšete. Anglický originál Billa Wolperta běžel koncem
+        sedmdesátých let na sálových počítačích, do češtiny ho v letech 1982–1985 převedli
+        P. Lampa a B. Michal a v roce 1988 ho Stanislav Matýšek přenesl na PC pod MS-DOS.
+        Tady běží ten původní kód, jen přeložený pro dnešní prohlížeč.</p>
+      <p><a href="esej.html">Dvě písmena do jednoho slova</a> - esej o tom, jak se celý
+        zámek vešel do 64 kilobajtů a jak se tehdy programovalo.</p>
+    </div>
     <h1 id="choose-h">Jak chcete do zámečku?</h1>
     <div class="cards">
       <button type="button" class="c" data-style="classic"><b>Klasika</b>
         Jen terminál, kurzor a vy, jako v roce 1988. Příkazy se píšou a hra
         neprozradí, kterým slovům rozumí. Hledání společné řeči je součást zážitku.</button>
       <button type="button" data-style="modern"><b>Moderní</b>
-        Text, vedle něj panely na klikání.</button>
+        Text a vedle něj mapa míst, kterými jste prošli (kliknutím na místnost tam
+        dojdete), a panely na klikání: východy, co vidíte, kdo je s Vámi, Vaše výbava.</button>
     </div>
     <p>Hra je v obou případech tatáž, původní kód z let 1982–1988. Přepnout jde kdykoli v záhlaví.</p>
   </div>
