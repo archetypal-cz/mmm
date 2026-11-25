@@ -2,7 +2,7 @@
 // memory and derives what the player can know, using the game's own rules
 // (MMRI item listing, MMRL light check, MMSB "Je zde s Vámi", MMSC exits).
 import { decode } from "./cp852.js";
-import { ITEM_WORDS, ITEM_SHOWN, SCENERY } from "./data.js";
+import { ITEM_WORDS, ITEM_SHOWN, ITEM_SHOWN_CZ, SCENERY } from "./data.js";
 
 // COMMON /MMBC/ layout (INTEGER*2 units), in MMCO.FOR order; packed.
 const SIZES = [
@@ -57,7 +57,8 @@ export function isDead(mod) {
   return !!p && new Int16Array(mod.HEAPU8.buffer, p, 1)[0] === 1;
 }
 
-export function readState(mod) {
+export function readState(mod, lang = "puvodni") {
+  const SHOWN = lang === "cz" && ITEM_SHOWN_CZ ? ITEM_SHOWN_CZ : ITEM_SHOWN;   // panel names in the new translation
   const { at, text } = reader(mod);
   const ITST = (i) => at("ITST", i);
   const IVEN = (i) => at("IVEN", i);
@@ -98,7 +99,7 @@ export function readState(mod) {
 
   const item = (j) => {
     const word = ITEM_WORDS[j - 1];
-    return { id: j, word, noun: accusative(word), name: (ITEM_SHOWN[j - 1] || word.toLowerCase()) };
+    return { id: j, word, noun: accusative(word), name: (SHOWN[j - 1] || word.toLowerCase()) };
   };
 
   // MMRI(1) "preskok veci popsanych v popisu mista": items the game leaves out

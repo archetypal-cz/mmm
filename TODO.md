@@ -16,7 +16,6 @@
 - Panel a mapa i pro anglickou verzi (jiné rozložení COMMON, anglický slovník).
 
 ## Nový český překlad
-- Názvy předmětů v panelu brát z nového překladu (teď z původní CZ).
 - Případně upravit i slovník parseru (synonyma), ne jen hlášky.
 
 ## Testy a historie

@@ -43,18 +43,25 @@ words = quoted(statement(mmsb, r"\s+DATA CTEM1/")) + quoted(statement(mmsb, r"\s
 assert len(words) == 149, len(words)
 
 mmm = read("MMM.FOR")
-shown = {}
+shown, label_of = {}, {}
 lines = mmm.split("\n")
 for i, line in enumerate(lines):
-    m = re.match(r"\s*\d*\s+F='\(''(.*)''\$\)'", line)
+    m = re.match(r"\s*(\d*)\s+F='\(''(.*)''\$\)'", line)
     if m and i + 1 < len(lines):
         n = re.search(r"IF\(J\.EQ\.(\d+)\)WRITE", lines[i + 1])
         if n:
-            shown[int(n.group(1))] = m.group(1).replace("''''", "'").strip()
+            shown[int(n.group(1))] = m.group(2).replace("''''", "'").strip()
+            label_of[int(n.group(1))] = m.group(1)
+
+# the same item names in the new Czech translation (lang=cz), by FORMAT label
+new = {r["label"]: r["new"] for r in json.loads(
+    (ROOT / "wasm" / "cz" / "messages.json").read_text(encoding="utf-8")) if r["file"] == "MMM"}
+shown_cz = {j: re.sub(r"\{[^}]*\}", "", new.get(label_of[j], "")).strip() or shown[j] for j in shown}
 
 data = {
     "ITEM_WORDS": [w.strip() for w in words],
     "ITEM_SHOWN": [shown.get(i, "") for i in range(1, 54)],
+    "ITEM_SHOWN_CZ": [shown_cz.get(i, "") for i in range(1, 54)],
     "SCENERY": {int(k): v for k, v in json.loads(
         (ROOT / "wasm" / "scenery.json").read_text(encoding="utf-8"))["rooms"].items()},
 }

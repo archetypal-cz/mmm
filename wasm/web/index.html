@@ -607,7 +607,7 @@ function readLine(m) {
   // the panel is live only at the game's main " >" prompt; questions
   // (ANO/NE, name, file name) are answered by typing
   if (main && LANG !== "en") {
-    try { state = readState(mod); automap.visit(state); } catch (e) { console.error(e); state = null; }
+    try { state = readState(mod, LANG); automap.visit(state); } catch (e) { console.error(e); state = null; }
     drawMap();
     render();
     relink();
