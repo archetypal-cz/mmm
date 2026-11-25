@@ -18,7 +18,7 @@ Na webu jsou tři verze téže hry:
 | Přepínač | Co to je |
 |---|---|
 | `?lang=puvodni` | **Původní čeština** z roku 1988, přesně jak se hrála na PC pod DOSem |
-| `?lang=cz` | **Nový český překlad** hlášek (2026), stejný engine, slovník i logika |
+| `?lang=cz` | **Nový český překlad** hlášek (2026), stejný engine, slovník i logika; výchozí |
 | `?lang=en` | **Anglický originál** *Mystery Mansion* Billa Wolperta (1978-1981) |
 
 K tomu klikací panel s předměty, automapa prozkoumaných místností, klasický nebo moderní

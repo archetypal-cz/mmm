@@ -60,7 +60,7 @@
  "MMSA:7": "\n Vaše jméno? {$}",
  "MMSA:11": " Dokud mi neřeknete své jméno, nebudu se s vámi bavit.",
  "MMSA:25": " Vaše jméno v seznamu není. Lituji.",
- "MMSA:100": "\n Nazdar, {10A2}\n Vítejte v tajemném zámku. Záhada č.{I4}, revize {I3} - 8826\n P.L.+B.M.+S.M. Počítačová fantazie, kterou vám věnuje Bill Wolpert.\n\n       A r c h e t y p a l . c z\n\n",
+ "MMSA:100": "\n Nazdar, {10A2}\n Vítejte v tajemném zámku. Záhada č.{I4}, revize {I3} - 8826\n P.L.+B.M.+S.M. Počítačová fantazie, kterou vám věnuje Bill Wolpert.\n\n",
  "MMSA:101": "      Tajemný zámek stojí na faktech, smyšlenkách a fantaziích\n minulosti, přítomnosti i budoucnosti. Scénář má prověřit odvážné\n a pobavit zvědavé. Utečte na chvíli od všedního světa a zažijte\n zklamání i triumf, naději i zoufalství, moc, chtíč a chamtivost.\n      Využijte, co víte, co dokážete zjistit a co funguje. Mně jen\n říkejte, co chcete udělat nebo co je podle vás třeba udělat. Snažte se\n odhalit co nejvíc skutečností; každý váš krok je sledován a bodován.\n      Vaším cílem je získat co nejvíc bodů.\n\n      Stojíte před těžkou železnou branou. Je to zřejmě jediná cesta\n skrz vysokou cihlovou zeď, za kterou se skrývá starý zámek; branou ho\n jen tak tak zahlédnete. Podél zdi vede cesta VÝCHODNĚ a ZÁPADNĚ.\n Svítá a z chladných míst se právě zvedá řídká přízemní mlha. Za vámi,\n JIŽNĚ za cestou, začíná silnice, která míří k jihu, kam až oko\n dohlédne. V dálce ještě vidíte drožku, která vás sem přivezla, jak\n mizí z dohledu.",
  "MMSA:99990": " Chyba FMP {I4}",
  "MMSB:173": "\n Trvá vám to příliš dlouho.",

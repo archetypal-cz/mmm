@@ -236,9 +236,11 @@ def patch_rnd_common(text):
 def patch_publisher(text):
     """Title screen publisher line.  History: 'J Z D   A K   S l u s o v i c e'
     (Kamenicky copy), 'F U T U R E   E n g i n e e r i n g ,   s. r. o.'
-    (MMM_LAT), and since 2026 the web edition is published by Archetypal.cz."""
-    return text.replace("' F U T U R E   E n g i n e e r i n g ,   s. r. o.'",
-                        "' A r c h e t y p a l . c z'", 1)
+    (MMM_LAT).  The web edition drops the line (and its blank lines) altogether:
+    the publisher is credited in CREDITS.md, not in the game."""
+    return re.sub(r"'//' ',5x,([ \t]*\r?\n)(\s*:)' F U T U R E   E n g i n e e r i n g ,"
+                  r"   s\. r\. o\.'//\)",
+                  r"'/\1\2/)", text, count=1)
 
 
 def add_eof_stop(text):

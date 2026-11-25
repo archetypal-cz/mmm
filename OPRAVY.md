@@ -212,8 +212,9 @@ výstup do posledního bajtu shodný s nativní verzí.
 
 - **Hlavička úvodní obrazovky.** Řádek pod titulkem má za sebou celou historii:
   v kamenické kopii zdrojáků stojí `J Z D   A K   S l u š o v i c e`, v Latin-2 kopii
-  `F U T U R E   E n g i n e e r i n g ,   s. r. o.` Webové vydání z roku 2026 tam má
-  `A r c h e t y p a l . c z`. Původní znění zůstávají ve zdrojácích i v `CREDITS.md`.
+  `F U T U R E   E n g i n e e r i n g ,   s. r. o.` Webové vydání z roku 2026 ten řádek
+  vynechává (vydavatel patří do `CREDITS.md`, ne do hry). Původní znění zůstávají ve
+  zdrojácích i v `CREDITS.md`.
 
 ## Odchylky od anglického originálu
 

@@ -188,16 +188,38 @@
     .app.both { grid-template-columns: 1fr; grid-template-rows: auto 32vh minmax(0, 1fr) auto auto;
       grid-template-areas: "head" "map" "screen" "input" "side"; }
   }
+
+  /* header: on phones just icon + title + hamburger, the rest drops down */
+  header .appicon, #menu-btn { display: none; }
+  .hdr-more { display: contents; }
+  @media (max-width: 52rem) {
+    header { position: relative; flex-wrap: nowrap; align-items: center; gap: .55rem; padding: .3rem .75rem; }
+    header .appicon { display: block; width: 22px; height: 22px; border-radius: 4px; flex: none; }
+    header b { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    #menu-btn { display: block; flex: none; font: inherit; font-size: 1.1rem; line-height: 1; color: var(--fg);
+      background: none; border: 1px solid #2a3a33; border-radius: .35rem; padding: .25rem .55rem; cursor: pointer; }
+    #menu-btn[aria-expanded="true"] { color: var(--hot); border-color: var(--hot); }
+    .hdr-more { display: none; position: absolute; z-index: 6; top: 100%; left: 0; right: 0;
+      flex-direction: column; align-items: flex-start; gap: .8rem; padding: .8rem 1rem 1rem;
+      background: var(--panel); border-bottom: 1px solid var(--line); box-shadow: 0 8px 24px #000a; }
+    header.open .hdr-more { display: flex; }
+    .hdr-more .style, .hdr-more .tabs { flex-wrap: wrap; margin: 0; }
+    .hdr-more .tabs label { margin-left: .3rem; }
+    .hdr-more .credit { order: 9; line-height: 1.6; padding-top: .6rem; border-top: 1px solid var(--line); }
+  }
 </style>
 </head>
 <body>
 <div class="app">
   <header>
+    <img class="appicon" src="favicon-48.png" alt="">
     <b>Magical Mystery Mansion</b>
-    <span>P. Lampa, B. Michal 1982–83 · MS-DOS S. Matýšek 1988 · dle Mystery Mansion (B. Wolpert) · <a href="esej.html" target="_blank" style="color:var(--hot)">jak se tehdy programovalo</a></span>
+    <button type="button" id="menu-btn" aria-expanded="false" aria-controls="hdr-more" aria-label="nabídka">☰</button>
+    <div class="hdr-more" id="hdr-more">
+    <span class="credit">P. Lampa, B. Michal 1982–83 · MS-DOS S. Matýšek 1988 · dle Mystery Mansion (B. Wolpert) · <a href="esej.html" target="_blank" style="color:var(--hot)">jak se tehdy programovalo</a></span>
     <span class="style lang" title="jazyk / verze hry">
-      <button type="button" id="lang-cz" aria-pressed="false" title="nový český překlad (2026)">CZ</button>
-      <button type="button" id="lang-puvodni" aria-pressed="true" title="původní česká verze 1982–1988">PŮVODNÍ CZ</button>
+      <button type="button" id="lang-cz" aria-pressed="true" title="nový český překlad (2026)">CZ</button>
+      <button type="button" id="lang-puvodni" aria-pressed="false" title="původní česká verze 1982–1988">PŮVODNÍ CZ</button>
       <button type="button" id="lang-en" aria-pressed="false" title="anglický originál Billa Wolperta (1978–81)">EN</button>
     </span>
     <span class="style" title="styl hraní">
@@ -213,6 +235,7 @@
     <span class="style" id="install-wrap" hidden>
       <button type="button" id="install" title="nainstalovat jako aplikaci, hraje i offline">nainstalovat</button>
     </span>
+    </div>
   </header>
   <div id="screen" aria-live="polite"></div>
   <div id="mapbox"><div id="orient"></div><svg id="map" role="img" aria-label="Mapa prozkoumaných míst"></svg></div>
@@ -255,6 +278,17 @@ import { AutoMap } from "./map.js";
 const automap = new AutoMap();
 automap.revealAll = new URLSearchParams(location.search).get("mapa") === "vse";   // preview: whole map
 try { automap.rotate = localStorage.getItem("mmm-map-rotate") !== "0"; } catch { /* */ }
+// phone header: hamburger opens the switches + credit; any choice or outside click closes it
+{
+  const head = document.querySelector("header"), btn = document.getElementById("menu-btn");
+  const setOpen = (open) => { head.classList.toggle("open", open); btn.setAttribute("aria-expanded", open); };
+  btn.addEventListener("click", (e) => { e.stopPropagation(); setOpen(!head.classList.contains("open")); });
+  document.getElementById("hdr-more").addEventListener("click", (e) => {
+    if (e.target.closest("button, input")) setTimeout(() => setOpen(false), 150);
+  });
+  document.addEventListener("click", (e) => { if (!head.contains(e.target)) setOpen(false); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && head.classList.contains("open")) setOpen(false); });
+}
 // view modes: text only, map only, or both (default); remembered
 const MODES = ["text", "both", "map"];
 const setMode = (mode) => {
@@ -660,7 +694,7 @@ setMode((() => { try { return localStorage.getItem("mmm-view"); } catch { return
 const LANG = (() => {
   let l = null;
   try { l = new URLSearchParams(location.search).get("lang") || localStorage.getItem("mmm-lang"); } catch { /* */ }
-  return l === "en" || l === "cz" ? l : "puvodni";
+  return l === "en" || l === "puvodni" ? l : "cz";
 })();
 document.querySelector(".app").classList.toggle("en", LANG === "en");
 document.documentElement.lang = LANG === "en" ? "en" : "cs";
