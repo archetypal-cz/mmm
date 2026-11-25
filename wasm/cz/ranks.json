@@ -1,0 +1,4 @@
+{
+ "_comment": "Player ranks for the new CZ translation (CCLS in MMM.FOR), adjectives as in the English original (PITIFUL ... SUPER). Max 8 characters; prep.py right-aligns them so the padding lands after 'hodnocení:' rather than before 'detektiv'.",
+ "ranks": ["žalostný", "ubohý", "smolný", "učňovský", "slušný", "laický", "dobrý", "šťastný", "obratný", "úžasný", "mistrný", "dokonalý"]
+}
