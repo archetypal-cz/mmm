@@ -1,0 +1,25 @@
+# Týdenní sken celé historie na uniklá tajemství (gitleaks, výstup redigovaný).
+# Selhání = možný únik → GitHub pošle e-mail; řešení je rotace tajemství, ne výjimka.
+name: gitleaks
+on:
+  schedule:
+    - cron: "0 5 * * 1"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: gitleaks 8.21.2 (ověřený checksum)
+        run: |
+          curl -sSL -o gl.tgz https://github.com/gitleaks/gitleaks/releases/download/v8.21.2/gitleaks_8.21.2_linux_x64.tar.gz
+          echo "5bc41815076e6ed6ef8fbecc9d9b75bcae31f39029ceb55da08086315316e3ba  gl.tgz" | sha256sum -c
+          tar xzf gl.tgz gitleaks && rm gl.tgz
+      - name: sken historie
+        run: |
+          cfg=""; [ -f .gitleaks.toml ] && cfg="--config .gitleaks.toml"
+          ./gitleaks git . --redact=100 --no-banner $cfg

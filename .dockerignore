@@ -1,0 +1,21 @@
+# Only what deploy/Dockerfile needs (whitelist)
+*
+!MMM_LAT/
+!native/
+!original_en/hp1000-fortran/
+!wasm/
+!deploy/nginx.conf
+native/build*/
+native/*.exe
+wasm/dist/
+wasm/.cache/
+wasm/gen/
+wasm/gen-cz/
+wasm/en/gen/
+**/node_modules/
+**/__pycache__/
+**/*.png
+!wasm/web/icon-*.png
+!wasm/web/apple-touch-icon.png
+!wasm/web/favicon-48.png
+!wasm/web/og-esej.png
