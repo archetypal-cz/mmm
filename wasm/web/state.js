@@ -50,6 +50,13 @@ const ACC = {
 export const accusative = (w) => ACC[w] ?? (w.endsWith("A") ? w.slice(0, -1) + "U" : w);
 
 /** Snapshot of everything the UI may show. Call only while the game waits for input. */
+/** 1 while the player is dead: COMMON /MMWEB/ IDEAD, set by the web build
+    around the reincarnation question (native/prep.py patch_death_flag). */
+export function isDead(mod) {
+  const p = mod._mmm_common_mmweb ? mod._mmm_common_mmweb() : 0;
+  return !!p && new Int16Array(mod.HEAPU8.buffer, p, 1)[0] === 1;
+}
+
 export function readState(mod) {
   const { at, text } = reader(mod);
   const ITST = (i) => at("ITST", i);
@@ -175,7 +182,7 @@ export function readState(mod) {
 
   return {
     room: ir, roomName, lit, turn, facing, compassNeeded, hasCompass, verbs, exitsOf, nameOf,
-    mystery: ITST(23),
+    mystery: ITST(23), dead: isDead(mod),
     here: lit ? here : [], fixed: lit ? fixed : [], tucked: lit ? tucked : [], scenery: lit ? scenery : [],
     people: lit ? people : [],
     inventory, exits,

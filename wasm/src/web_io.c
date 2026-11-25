@@ -37,3 +37,8 @@ int mmm_feof(FILE *f) { return f == stdin ? at_eof : feof(f); }
 /* Base address of COMMON /MMBC/ etc. for the UI to read game state. */
 extern char mmbc_[], lkeys_[], ipr_[];
 EMSCRIPTEN_KEEPALIVE void *mmm_common_mmbc(void) { return mmbc_; }
+/* COMMON /MMWEB/ IDEAD (native/prep.py patch_death_flag): 1 while the player
+   is dead (reincarnation question, or the game ended by death).  Weak: the
+   English engine has no such block and gets NULL. */
+extern char mmweb_[] __attribute__((weak));
+EMSCRIPTEN_KEEPALIVE void *mmm_common_mmweb(void) { return mmweb_; }

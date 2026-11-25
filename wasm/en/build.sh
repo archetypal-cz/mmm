@@ -22,7 +22,7 @@ else
     -sASYNCIFY -sASYNCIFY_STACK_SIZE=1048576 -sSTACK_SIZE=4194304 \
     -sMODULARIZE -sEXPORT_ES6 -sEXPORT_NAME=createMMMEN -sENVIRONMENT=web,node \
     -sEXIT_RUNTIME=1 -sALLOW_MEMORY_GROWTH \
-    -sEXPORTED_RUNTIME_METHODS=FS,HEAPU8,HEAP16 -sEXPORTED_FUNCTIONS=_main,_mmm_common_mmbc \
+    -sEXPORTED_RUNTIME_METHODS=FS,HEAPU8,HEAP16 -sEXPORTED_FUNCTIONS=_main,_mmm_common_mmbc,_mmm_common_mmweb \
     -o ../dist/mmm-en.js
 fi
 echo "built wasm/dist (english, $TARGET)"

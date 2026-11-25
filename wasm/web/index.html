@@ -130,6 +130,8 @@
     #map .trail { animation: none; }
   }
   #map .room.here text { fill: var(--you); }
+  #map .room.dead rect { fill: #1a1214; stroke: #6b3a3f; }
+  #map .room.dead text.skull { fill: #e9e2cf; font-size: 13px; font-weight: 600; }
 
   .style { display: flex; gap: .25rem; }
   .style[hidden] { display: none; }
@@ -247,7 +249,7 @@
 </div>
 <script type="module">
 import { startGame, listSaves, readSave, writeSave, deleteSave, saveName } from "./game.js";
-import { readState, DIRS } from "./state.js";
+import { readState, isDead, DIRS } from "./state.js";
 import { AutoMap } from "./map.js";
 
 const automap = new AutoMap();
@@ -613,6 +615,7 @@ function readLine(m) {
   } else {
     side.querySelectorAll("button").forEach((b) => (b.disabled = true));
     if (walk.steps.length) stopWalk("hra se na něco ptá");
+    if (state && LANG !== "en" && isDead(mod) && !state.dead) { state = { ...state, dead: true }; drawMap(); }
   }
   cmd.focus();
   return answer;
@@ -687,6 +690,7 @@ startGame({
     cmd.placeholder = "konec hry · obnovte stránku pro novou záhadu";
     append("\n[Hra skončila.]\n", "sys");
     side.querySelectorAll("button").forEach((b) => (b.disabled = true));
+    if (state) { state = { ...state, ended: true, dead: LANG !== "en" && isDead(mod) }; drawMap(); }
   },
 }).catch((err) => append("\n[Chyba: " + err + "]\n", "sys"));
 </script>

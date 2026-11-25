@@ -6,7 +6,8 @@ import { LAYOUT, MAZE } from "./layout.js";
 
 const DELTA = { 1: [0, -1], 2: [1, 0], 3: [0, 1], 4: [-1, 0], 5: [1, -1], 6: [-1, 1] };
 // spacing works both ways: turned by 90° the vertical spacing must still fit a box width
-const W = 128, H = 50, GX = 166, GY = 142;     // box size and grid spacing (px)
+const W = 128, H = 50, GX = 166, GY = 142;
+const SKULL = [".-.", "(x.x)", "|=|"];             // replaces the room name where the player died     // box size and grid spacing (px)
 const NS = "http://www.w3.org/2000/svg";
 
 export class AutoMap {
@@ -130,6 +131,9 @@ export class AutoMap {
   /** Draw into an <svg>; onGo(steps) is called when a reachable room is clicked. */
   render(svg, state, onGo) {
     svg.replaceChildren();
+    // dead (reincarnation question, or the game ended by death) or game over:
+    // nothing on the map is clickable any more
+    const locked = !!(state.dead || state.ended);
     const floor = this.rooms[state.room]?.z ?? 0;
     this.floor = floor;
     const ids = Object.keys(this.rooms).map(Number).filter((r) => (this.rooms[r].z ?? 0) === floor);
@@ -281,7 +285,7 @@ export class AutoMap {
           const ex = cx(p) + dx * GX * 0.62, ey = cy(p) + dy * GY * 0.62;
           edges.append(mk("line", { x1: cx(p), y1: cy(p), x2: ex, y2: ey,
             class: `edge stub${vertical ? " vertical" : ""}${e.closed ? " closed" : ""}` }));
-          const steps = this.routeOut(state, r, e);
+          const steps = locked ? null : this.routeOut(state, r, e);
           const q = mk("g", { class: `stubq${steps ? " go" : ""}`,
             transform: `translate(${ex + dx * 10} ${ey + dy * 10})` });
           // a known room on another floor shows as ↑/↓, an unknown one as ?
@@ -300,18 +304,23 @@ export class AutoMap {
 
     for (const r of ids) {
       const p = P(r), here = r === state.room;
-      const steps = here ? null : this.route(state, r);
+      const steps = here || locked ? null : this.route(state, r);
       const cls = steps ? (adjacent.has(r) && steps.length === 1 ? " go" : " far") : "";
-      const g = mk("g", { class: `room${here ? " here" : ""}${cls}${p.name ? "" : " dark"}`,
+      const skull = here && state.dead;
+      const g = mk("g", { class: `room${here ? " here" : ""}${skull ? " dead" : ""}${cls}${p.name ? "" : " dark"}`,
         transform: `translate(${cx(p) - W / 2} ${cy(p) - H / 2})` });
       const body = upright(mk("g", {}));
       body.append(mk("rect", { width: W, height: H, rx: 7 }));
-      const [l1, l2] = wrap(p.name || "(tma)", 17);
-      body.append(mk("text", { x: W / 2, y: l2 ? 21 : 29 }, l1));
-      if (l2) body.append(mk("text", { x: W / 2, y: 37 }, l2));
+      if (skull) {                                  // where the player died: an ASCII skull
+        SKULL.forEach((line, i) => body.append(mk("text", { x: W / 2, y: 15 + i * 13, class: "skull" }, line)));
+      } else {
+        const [l1, l2] = wrap(p.name || "(tma)", 17);
+        body.append(mk("text", { x: W / 2, y: l2 ? 21 : 29 }, l1));
+        if (l2) body.append(mk("text", { x: W / 2, y: 37 }, l2));
+      }
       const ups = state.exitsOf(r).filter((e) => e.dir >= 5).map((e) => (e.dir === 5 ? "↑" : "↓")).join("");
       if (ups) body.append(mk("text", { x: W - 9, y: 14, class: "updown" }, ups));
-      g.append(body, mk("title", {}, (p.name || "tmavá místnost") +
+      g.append(body, mk("title", {}, (p.name || "tmavá místnost") + (skull ? " · tady to skončilo" : "") +
         (steps ? ` · ${steps.length === 1 ? "jít sem" : `dojít sem (${steps.length} kroků)`}` : "")));
       if (steps) g.addEventListener("click", () => onGo(steps));
       nodes.append(g);

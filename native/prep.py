@@ -271,9 +271,28 @@ def patch_garden_gate(text):
     return new
 
 
+def patch_web_common(text):
+    """COMMON /MMWEB/ IDEAD: a flag for the web page only (the game never
+    reads it), so the map can show that the player is dead.  Own block, so
+    /MMBC/ and saved games keep their layout."""
+    return text + "      COMMON /MMWEB/ IDEAD\n"
+
+
+def patch_death_flag(text):
+    """Every death goes through the reincarnation routine (MMSD 80000):
+    IDEAD=1 when it starts, IDEAD=0 when the player is reincarnated (80050).
+    Declining or lacking points ends the game with the flag still set."""
+    new, n1 = re.subn(r"^80001 (LU=IPR\(1\).*)$", r"80001 IDEAD=1\n      \1", text, flags=re.M)
+    new, n2 = re.subn(r"^80050 (IF \(IVEN\(4\).*)$", r"80050 IDEAD=0\n      \1", new, flags=re.M)
+    if (n1, n2) != (1, 1):
+        raise SystemExit(f"patch_death_flag: expected 1+1 matches, got {n1}+{n2}")
+    return new
+
+
 PATCHES = {
     "MMSA.FOR": [patch_publisher],
-    "MMCO.FOR": [patch_rnd_common],
+    "MMCO.FOR": [patch_rnd_common, patch_web_common],
+    "MMSD.FOR": [patch_death_flag],
     "MMLB.FOR": [patch_reio_eof],
     "MMM.FOR": [patch_mmrl],
     "MMSB.FOR": [patch_mmrl_callers],
