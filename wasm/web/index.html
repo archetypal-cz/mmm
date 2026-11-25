@@ -1,0 +1,696 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Magical Mystery Mansion</title>
+<meta name="theme-color" content="#0d1110">
+<meta name="description" content="Česká textová detektivka z let 1982–1988, původní kód v prohlížeči.">
+<link rel="manifest" href="manifest.webmanifest" crossorigin="use-credentials"><!-- credentials: works behind login -->
+<link rel="icon" href="favicon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+  :root {
+    --bg: #0d1110; --panel: #121917; --line: #1f2a25;
+    --fg: #b8f0c0; --dim: #6f9c77; --you: #f3e3a1; --hot: #8fd3ff;
+    --font: "Cascadia Mono", "JetBrains Mono", "DejaVu Sans Mono", Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body { background: var(--bg); color: var(--fg); font: 15px/1.45 var(--font); }
+  .app {
+    height: 100%; display: grid; grid-template-columns: minmax(0, 82ch) 19rem;
+    grid-template-rows: auto 1fr auto; justify-content: center;
+    grid-template-areas: "head head" "screen side" "input side";
+  }
+  header { grid-area: head; padding: .5rem 1rem; color: var(--dim); font-size: .8rem;
+    border-bottom: 1px solid var(--line); display: flex; gap: 1rem; flex-wrap: wrap; align-items: baseline; }
+  header b { color: var(--fg); font-size: .95rem; }
+  #screen { grid-area: screen; overflow-y: auto; padding: 1rem; white-space: pre-wrap; overflow-wrap: anywhere; }
+  #screen .you { color: var(--you); }
+  #screen .sys { color: var(--dim); font-style: italic; }
+  form { grid-area: input; display: flex; gap: .5rem; padding: .6rem 1rem; border-top: 1px solid var(--line); }
+  form span { color: var(--dim); }
+  #cmd { flex: 1; background: transparent; border: none; outline: none; color: var(--you);
+    font: inherit; caret-color: var(--you); }
+  #cmd:disabled { opacity: .4; }
+
+  aside { grid-area: side; background: var(--panel); border-left: 1px solid var(--line);
+    overflow-y: auto; padding: .8rem; font-size: .85rem; }
+  aside h2 { font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; color: var(--dim);
+    margin: 1rem 0 .4rem; font-weight: 600; }
+  aside h2:first-child { margin-top: 0; }
+  .savename { width: 8rem; font: inherit; font-size: .82rem; background: #0f1513; color: var(--fg);
+    border: 1px solid #2a3a33; border-radius: .35rem; padding: .2rem .45rem; }
+  .saverow { align-items: center; margin-top: .35rem; }
+  .saverow span { min-width: 5.5rem; color: var(--fg); }
+  .place { color: var(--fg); font-size: 1rem; }
+  .muted { color: var(--dim); font-style: italic; }
+  .chips { display: flex; flex-wrap: wrap; gap: .35rem; }
+  button.chip { font: inherit; font-size: .82rem; color: var(--fg); background: #18231f;
+    border: 1px solid #2a3a33; border-radius: .35rem; padding: .2rem .55rem; cursor: pointer; }
+  button.chip:hover, button.chip:focus-visible { border-color: var(--hot); color: var(--hot); outline: none; }
+  button.chip.closed { opacity: .55; }
+  button.chip.verb { color: var(--you); }
+  button.chip:disabled { opacity: .35; cursor: default; }
+  .menu { margin-top: .5rem; padding: .5rem; border: 1px solid #2a3a33; border-radius: .4rem; background: #0f1513; }
+  .menu .title { color: var(--hot); margin-bottom: .35rem; }
+  .menu details { margin-top: .4rem; color: var(--dim); }
+  #raw { white-space: pre; font-size: .72rem; color: var(--dim); }
+  #screen .kw { color: var(--hot); text-decoration: underline dotted #4d7f96; text-underline-offset: 3px;
+    cursor: pointer; border-radius: .2rem; }
+  #screen .kw.dir { color: var(--you); text-decoration-color: #7a6d35; }
+  #screen .kw:hover, #screen .kw:focus-visible { background: #1b2c34; outline: none; }
+  #pop { position: fixed; z-index: 5; max-width: 22rem; font: 13px/1.4 var(--font); }
+  #pop .menu { margin: 0; box-shadow: 0 6px 24px #000a; background: #0f1513; }
+
+  .tabs { display: flex; gap: .25rem; margin-left: auto; }
+  .tabs button { font: inherit; font-size: .8rem; color: var(--dim); background: none; border: 1px solid transparent;
+    border-radius: .3rem; padding: .1rem .55rem; cursor: pointer; }
+  .tabs button[aria-pressed="true"] { color: var(--fg); border-color: #2a3a33; background: #18231f; }
+  .tabs label { margin-left: .5rem; cursor: pointer; align-self: center; }
+  #mapbox { grid-area: screen; overflow: auto; display: none; background:
+    radial-gradient(circle, #16201c 1px, transparent 1px) 0 0 / 24px 24px; }
+  .app.map #mapbox { display: block; }
+  .app.map #screen { display: none; }
+  /* text + map: map above the text, or a third column on wide screens */
+  .app.both { grid-template-rows: auto minmax(0, 42%) minmax(0, 1fr) auto;
+    grid-template-areas: "head head" "map side" "screen side" "input side"; }
+  .app.both #mapbox { display: block; grid-area: map; border-bottom: 1px solid var(--line); }
+  @media (min-width: 100rem) {
+    .app.both { grid-template-columns: minmax(0, 82ch) minmax(24rem, 1fr) 19rem; justify-content: stretch;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      grid-template-areas: "head head head" "screen map side" "input map side"; }
+    .app.both #mapbox { border-bottom: none; border-left: 1px solid var(--line); }
+  }
+  #map { width: 100%; height: 100%; display: block; font-family: var(--font); }
+  #mapbox { position: relative; }
+  #orient { position: sticky; top: .6rem; left: .8rem; display: inline-block; margin: .6rem 0 -2.2rem .8rem; z-index: 1;
+    font-size: .78rem; color: var(--dim); background: #0d1110cc; padding: .15rem .5rem; border-radius: .3rem; }
+  #orient b { color: var(--hot); font-weight: 600; }
+  #orient .orient-toggle { font: inherit; color: var(--dim); background: none; border: none; padding: 0;
+    text-decoration: underline dotted; cursor: pointer; }
+  #orient .orient-toggle:hover { color: var(--hot); }
+  #map .edge { stroke: #3d5a4c; stroke-width: 3; fill: none; stroke-linecap: round; }
+  #map .arrowhead { fill: #5d8a74; }
+  #map .edge.vertical { stroke-dasharray: 6 5; }
+  #map .edge.closed { stroke: #8a5a4a; }
+  #map .edge.stub { stroke: #2c4238; }
+  #map .q { fill: #4f7563; font-size: 15px; text-anchor: middle; }
+  #map .maze { fill: url(#hatch); stroke: none; }
+  #map .hatchline { stroke: #2a2233; stroke-width: 4; }
+  #map .mazelabel { fill: #a58fc0; font-size: 12px; letter-spacing: .04em; }
+  #map .stubq circle { fill: transparent; stroke: none; }
+  #map .stubq.go { cursor: pointer; }
+  #map .stubq.go circle { fill: #10191c; stroke: #4d7f96; stroke-dasharray: 3 2; }
+  #map .stubq.go .q { fill: var(--hot); }
+  #map .stubq.go:hover circle { fill: #1b2c34; stroke: var(--hot); stroke-dasharray: none; }
+  #map .room rect { fill: #142019; stroke: #35503f; stroke-width: 1.5; }
+  #map .room text { fill: var(--fg); font-size: 12.5px; text-anchor: middle; }
+  #map .room .updown { fill: var(--hot); font-size: 12px; }
+  #map .room.dark rect { fill: #0b0f0d; stroke-dasharray: 4 3; }
+  #map .room.dark text { fill: var(--dim); font-style: italic; }
+  #map .room.go { cursor: pointer; }
+  #map .room.go rect { stroke: var(--hot); }
+  #map .room.go:hover rect { fill: #1b2c34; }
+  #map .room.far { cursor: pointer; }
+  #map .room.far rect { stroke: #4d7f96; stroke-dasharray: 5 3; }
+  #map .room.far:hover rect { fill: #17242a; stroke: var(--hot); stroke-dasharray: none; }
+  #map .room.here rect { fill: #2c2a17; stroke: #5a5228; stroke-width: 1.5; }
+  #map .hl { fill: none; stroke: var(--you); stroke-width: 3; pointer-events: none;
+    filter: drop-shadow(0 0 6px #f3e3a199); }
+  #map .upright { transform-box: fill-box; transform-origin: center; }
+  #map.moving .world, #map.moving .upright, #map.moving .hl {
+    transition: transform .5s cubic-bezier(.45, 0, .25, 1); }
+  #map .trail { stroke: var(--you); stroke-width: 4; stroke-linecap: round; opacity: 0; fill: none;
+    animation: trail .8s ease-out; }
+  @keyframes trail { 0% { opacity: .9; stroke-width: 7; } 100% { opacity: 0; stroke-width: 3; } }
+  @media (prefers-reduced-motion: reduce) {
+    #map.moving .world, #map.moving .upright, #map.moving .hl { transition: none; }
+    #map .trail { animation: none; }
+  }
+  #map .room.here text { fill: var(--you); }
+
+  .style { display: flex; gap: .25rem; }
+  .style[hidden] { display: none; }
+  .style button { font: inherit; font-size: .8rem; color: var(--dim); background: none; border: 1px solid transparent;
+    border-radius: .3rem; padding: .1rem .55rem; cursor: pointer; }
+  .style button[aria-pressed="true"] { color: var(--you); border-color: #4a4426; background: #23200f; }
+  .style button:disabled { opacity: .35; cursor: default; }
+  .lang { margin-right: .4rem; }
+  /* English original: terminal only for now (its memory layout differs) */
+  .app.en:not(.classic) { grid-template-columns: minmax(0, 82ch); grid-template-rows: auto 1fr auto;
+    grid-template-areas: "head" "screen" "input"; }
+  .app.en aside, .app.en #mapbox, .app.en .tabs { display: none; }
+  .app.en #screen { display: block; }
+
+  /* ---- classic: just the terminal, green phosphor ---- */
+  .app.classic, .app.classic.both, .app.classic.map { grid-template-columns: minmax(0, 82ch); grid-template-rows: auto 1fr auto;
+    justify-content: center; font-size: 17px;
+    grid-template-areas: "head" "screen" "input"; }
+  .app.classic aside, .app.classic #mapbox, .app.classic .tabs { display: none; }
+  .app.classic #screen { display: block; }
+  .app.classic, .app.classic #cmd { --fg: #4dff7a; --you: #4dff7a; --dim: #2a9a4a; }
+  body.classic { background: #020a04; }
+  .app.classic #screen, .app.classic form { color: #4dff7a;
+    text-shadow: 0 0 4px #1aff5a88, 0 0 12px #0f6a2a55; }
+  .app.classic #screen .you { color: #b4ffc6; }
+  .app.classic #cmd { text-transform: uppercase; }
+  body.classic::after { content: ""; position: fixed; inset: 0; pointer-events: none;
+    background: repeating-linear-gradient(to bottom, #0000 0 2px, #0003 2px 3px),
+                radial-gradient(ellipse at center, #0000 60%, #000a 100%); }
+
+  /* ---- first visit: how do you want to play? ---- */
+  #choose { position: fixed; inset: 0; z-index: 10; background: #070b09ee; display: none;
+    align-items: center; justify-content: center; padding: 1rem; }
+  #choose.show { display: flex; }
+  #choose .box { max-width: 46rem; }
+  #choose h1 { font-size: 1.3rem; color: var(--you); margin: 0 0 1rem; }
+  #choose .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  #choose button { display: flex; flex-direction: column; justify-content: flex-start; text-align: left; font: inherit; color: var(--fg); background: #121a17; border: 1px solid #2a3a33;
+    border-radius: .5rem; padding: 1rem 1.1rem; cursor: pointer; line-height: 1.5; }
+  #choose button:hover, #choose button:focus-visible { border-color: var(--hot); outline: none; }
+  #choose button b { display: block; color: var(--you); font-size: 1.05rem; margin-bottom: .3rem; }
+  #choose button.c b { color: #4dff7a; text-shadow: 0 0 6px #1aff5a88; }
+  #choose p { color: var(--dim); font-size: .85rem; margin: 1rem 0 0; }
+  @media (max-width: 40rem) { #choose .cards { grid-template-columns: 1fr; } }
+
+  @media (max-width: 52rem) {
+    .app { grid-template-columns: 1fr; grid-template-rows: auto 1fr auto auto;
+      grid-template-areas: "head" "screen" "input" "side"; }
+    aside { border-left: none; border-top: 1px solid var(--line); max-height: 40vh; }
+    .app.both { grid-template-columns: 1fr; grid-template-rows: auto 32vh minmax(0, 1fr) auto auto;
+      grid-template-areas: "head" "map" "screen" "input" "side"; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <b>Magical Mystery Mansion</b>
+    <span>P. Lampa, B. Michal 1982–83 · MS-DOS S. Matýšek 1988 · dle Mystery Mansion (B. Wolpert) · <a href="esej.html" target="_blank" style="color:var(--hot)">jak se tehdy programovalo</a></span>
+    <span class="style lang" title="jazyk / verze hry">
+      <button type="button" id="lang-cz" aria-pressed="false" title="nový český překlad (2026)">CZ</button>
+      <button type="button" id="lang-puvodni" aria-pressed="true" title="původní česká verze 1982–1988">PŮVODNÍ CZ</button>
+      <button type="button" id="lang-en" aria-pressed="false" title="anglický originál Billa Wolperta (1978–81)">EN</button>
+    </span>
+    <span class="style" title="styl hraní">
+      <button type="button" id="style-classic" aria-pressed="false">klasika</button>
+      <button type="button" id="style-modern" aria-pressed="true">moderní</button>
+    </span>
+    <span class="tabs">
+      <button type="button" id="tab-text" aria-pressed="false">text</button>
+      <button type="button" id="tab-both" aria-pressed="true">text + mapa</button>
+      <button type="button" id="tab-map" aria-pressed="false">mapa</button>
+      <label><input type="checkbox" id="debug"> stav</label>
+    </span>
+    <span class="style" id="install-wrap" hidden>
+      <button type="button" id="install" title="nainstalovat jako aplikaci, hraje i offline">nainstalovat</button>
+    </span>
+  </header>
+  <div id="screen" aria-live="polite"></div>
+  <div id="mapbox"><div id="orient"></div><svg id="map" role="img" aria-label="Mapa prozkoumaných míst"></svg></div>
+  <form id="form" autocomplete="off">
+    <span>&gt;</span>
+    <input id="cmd" disabled spellcheck="false" autocapitalize="characters" aria-label="Příkaz" placeholder="načítám…">
+  </form>
+  <aside id="side"><p class="muted">Načítám hru…</p></aside>
+</div>
+<div id="choose" role="dialog" aria-modal="true" aria-labelledby="choose-h">
+  <div class="box">
+    <h1 id="choose-h">Jak chcete do zámečku?</h1>
+    <div class="cards">
+      <button type="button" class="c" data-style="classic"><b>Klasika</b>
+        Jen terminál, kurzor a vy, jako v roce 1988. Příkazy se píšou a hra
+        neprozradí, kterým slovům rozumí. Hledání společné řeči je součást zážitku.</button>
+      <button type="button" data-style="modern"><b>Moderní</b>
+        Text, vedle něj panely na klikání.</button>
+    </div>
+    <p>Hra je v obou případech tatáž, původní kód z let 1982–1988. Přepnout jde kdykoli v záhlaví.</p>
+  </div>
+</div>
+<script type="module">
+import { startGame, listSaves, readSave, writeSave, deleteSave, saveName } from "./game.js";
+import { readState, DIRS } from "./state.js";
+import { AutoMap } from "./map.js";
+
+const automap = new AutoMap();
+automap.revealAll = new URLSearchParams(location.search).get("mapa") === "vse";   // preview: whole map
+try { automap.rotate = localStorage.getItem("mmm-map-rotate") !== "0"; } catch { /* */ }
+// view modes: text only, map only, or both (default); remembered
+const MODES = ["text", "both", "map"];
+const setMode = (mode) => {
+  if (!MODES.includes(mode)) mode = "both";
+  const app = document.querySelector(".app");
+  app.classList.toggle("map", mode === "map");
+  app.classList.toggle("both", mode === "both");
+  for (const m of MODES) document.getElementById(`tab-${m}`).setAttribute("aria-pressed", m === mode);
+  try { localStorage.setItem("mmm-view", mode); } catch { /* private mode */ }
+  if (mode !== "text") drawMap();
+  if (mode !== "map") document.getElementById("cmd").focus();
+};
+// play style: classic terminal or modern (panel + map); remembered
+const setStyle = (style) => {
+  const classic = style === "classic";
+  document.querySelector(".app").classList.toggle("classic", classic);
+  document.body.classList.toggle("classic", classic);
+  document.getElementById("style-classic").setAttribute("aria-pressed", classic);
+  document.getElementById("style-modern").setAttribute("aria-pressed", !classic);
+  try { localStorage.setItem("mmm-style", classic ? "classic" : "modern"); } catch { /* private mode */ }
+  document.getElementById("choose").classList.remove("show");
+  repaint();
+  if (!classic) drawMap();
+  document.getElementById("cmd").focus();
+};
+for (const s of ["classic", "modern"]) document.getElementById(`style-${s}`).addEventListener("click", () => setStyle(s));
+document.querySelectorAll("#choose [data-style]").forEach((b) => b.addEventListener("click", () => setStyle(b.dataset.style)));
+
+const drawMap = () => {
+  if (state && document.querySelector(".app.map:not(.classic), .app.both:not(.classic)"))
+  {
+    automap.render(document.getElementById("map"), state, (steps) => startWalk(steps));
+    const f = automap.floor || 0;
+    const fl = f === 0 ? "" : ` · ${f > 0 ? `${f}. patro nad` : `${-f}. podlaží pod`} úrovní brány`;
+    const o = document.getElementById("orient");
+    o.innerHTML = (state.compassNeeded && automap.rotate !== false
+      ? "<b>↑ vpřed</b> · bez kompasu se mapa otáčí s vámi"
+      : "<b>↑ sever</b>") + fl;
+    if (state.compassNeeded) {
+      const b = el("button", { className: "orient-toggle", type: "button",
+        textContent: automap.rotate === false ? "otáčet" : "neotáčet" });
+      b.addEventListener("click", (e) => {
+        e.stopPropagation();
+        automap.rotate = automap.rotate === false;
+        try { localStorage.setItem("mmm-map-rotate", automap.rotate ? "1" : "0"); } catch { /* */ }
+        drawMap();
+      });
+      o.append(" · ", b);
+    }
+  }
+};
+for (const m of MODES) document.getElementById(`tab-${m}`).addEventListener("click", () => setMode(m));
+addEventListener("resize", () => drawMap());
+
+const $ = (id) => document.getElementById(id);
+const screen = $("screen"), form = $("form"), cmd = $("cmd"), side = $("side");
+const history = [];
+let histPos = 0, waiting = null, state = null, menu = null, tail = "";
+let mod = null, followups = [], confirmDelete = null;
+
+// verbs offered first for each kind of thing (the rest is under "další")
+const VERBS = {
+  here:   ["VZÍT", "OTEVŘÍT", "ZAVŘÍT", "ČÍST", "POHNOUT", "ROZBÍT"],
+  inv:    ["PODÍVAT SE NA", "ODLOŽIT", "ČÍST", "ROZSVÍTIT", "ZHASNOUT", "OTEVŘÍT", "JÍST", "PÍT", "POLOŽIT"],
+  fixed:  ["PODÍVAT SE NA", "OTEVŘÍT", "ZAVŘÍT", "ODEMKNOUT", "POHNOUT", "ROZBÍT"],
+  person: ["PODÍVAT SE NA", "ZEPTAT SE", "SLEDOVAT", "NAPADNOUT", "ZABÍT"],
+};
+// scenery (state.scenery): the verbs the game really answers for it come first
+// (no secrets here: feeding the monkey stays the player's idea)
+const SCENERY_VERBS = {
+  BRÁNA: ["PODÍVAT SE NA", "OTEVŘÍT", "ZAVŘÍT", "ŠPLHAT NA"],
+  DVEŘE: ["ODEMKNOUT", "ZAMKNOUT", "OTEVŘÍT", "ZAVŘÍT", "PODÍVAT SE NA"],
+  ZÁCLONA: ["OTEVŘÍT", "ZAVŘÍT", "PODÍVAT SE NA"],
+  ZEĎ: ["ŠPLHAT NA", "PODÍVAT SE NA"],
+  STROM: ["ŠPLHAT NA", "PODÍVAT SE NA"],
+  HÁK: ["PODÍVAT SE NA", "POLOŽIT"],
+  POLICIE: ["ZAVOLAT"], DROŽKA: ["ZAVOLAT"],
+  VODA: ["PÍT", "PODÍVAT SE NA"],
+  PANTY: ["OLEJOVAT", "PODÍVAT SE NA"],
+  KAMENÍ: ["POHNOUT", "PODÍVAT SE NA"],
+  TRPASLÍK: ["PODÍVAT SE NA"],
+  ZÁMEK: ["ODEMKNOUT", "ROZBÍT", "PODÍVAT SE NA"],
+};
+// declined forms the stem rule misses ("zdi" for ZEĎ)
+const FORMS = { ZEĎ: "(?:ZEĎ|ZD[IÍ]|ZDECH|ZDMI)" };
+const GIVE = ["DÁT", "PODPLATIT", "NAKRMIT"];          // person + item from inventory
+const QUICK = ["ROZHLÉDNOUT SE", "POSLOUCHAT", "LIST", "SKÓRE", "POMOC"];
+
+function append(text, cls) {
+  const atBottom = screen.scrollHeight - screen.scrollTop - screen.clientHeight < 40;
+  const node = cls ? Object.assign(document.createElement("span"), { className: cls, textContent: text })
+                   : document.createTextNode(text);
+  screen.append(node);
+  block = null;                            // the next game output starts a new block
+  if (atBottom || cls === "you") screen.scrollTop = screen.scrollHeight;
+}
+
+// ---- game text: the original is hard-wrapped at ~60 columns with hyphenated
+// words. Classic shows it as is; modern reflows paragraphs to the window width.
+let block = null;
+const isClassic = () => document.querySelector(".app").classList.contains("classic");
+function gameText(text) {
+  const atBottom = screen.scrollHeight - screen.scrollTop - screen.clientHeight < 40;
+  if (!block) { block = document.createElement("span"); block.raw = ""; screen.append(block); }
+  block.raw += text;
+  paint(block);
+  if (atBottom) screen.scrollTop = screen.scrollHeight;
+}
+function paint(b) {
+  if (isClassic()) { b.textContent = b.raw; return; }
+  const text = reflow(b.raw);
+  if (b === linked && state) linkify(b, text); else b.textContent = text;
+}
+function repaint() { for (const b of screen.querySelectorAll("span")) if (b.raw !== undefined) paint(b); }
+
+// ---- clickable keywords in the latest description (modern style only) -----
+let linked = null;                         // the block whose words are live
+function relink() {
+  const blocks = [...screen.querySelectorAll("span")].filter((b) => b.raw !== undefined);
+  const last = blocks.at(-1) || null;
+  const old = linked;
+  linked = last;
+  if (old && old !== last) paint(old);     // older text: plain again
+  if (last) paint(last);
+}
+const esc = (x) => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const ADJ = "(?:\\p{L}+(?:á|ý|é|í|ou|ého|ému|ým|ých|ými)\\s+){0,2}";
+const stem = (w) => (w.length > 4 ? w.replace(/[AEIOUYÁÉÍÓÚŮÝĚ]+$/u, "") : w);
+function keywords(s) {
+  const list = [];
+  const thing = (kind, t) => {
+    if (t.name && /\s/.test(t.name)) list.push({ src: t.name.split(/\s+/).map(esc).join("\\s+"), kind, thing: t });
+    // the noun in any case, with up to two adjectives before it ("vyleštěná mosazná lucerna")
+    if (FORMS[t.word]) list.push({ src: ADJ + FORMS[t.word], kind, thing: t });
+    else if (t.word && stem(t.word).length >= 3)
+      list.push({ src: ADJ + esc(stem(t.word)) + "\\p{L}*", kind, thing: t });
+  };
+  for (const t of s.here) thing("here", t);
+  for (const t of s.tucked || []) thing("here", t);   // only where the text names them
+  for (const t of s.scenery || []) thing("here", { ...t, fixed: true, verbs: SCENERY_VERBS[t.word] });
+  for (const t of s.fixed) thing("here", { ...t, fixed: true });
+  for (const t of s.inventory) thing("inv", t);
+  for (const t of s.people) thing("person", t);
+  for (const e of s.exits) {                // directions the game will accept right now
+    if (e.closed || (e.dir <= 4 && s.compassNeeded)) continue;
+    const w = DIRS[e.dir - 1].replace("Á", "[AÁ]").replace("Ů", "[UŮ]");
+    list.push({ src: w, kind: "dir", cmd: e.cmd });
+  }
+  return list.sort((a, b) => b.src.length - a.src.length);
+}
+function linkify(b, text) {
+  const list = keywords(state);
+  if (!list.length) { b.textContent = text; return; }
+  const re = new RegExp(list.map((k) => `(?<!\\p{L})(${k.src})(?!\\p{L})`).join("|"), "giu");
+  b.replaceChildren();
+  let pos = 0;
+  for (const m of text.matchAll(re)) {
+    const k = list[m.slice(1).findIndex((g) => g !== undefined)];
+    b.append(text.slice(pos, m.index));
+    const w = el("span", { className: `kw ${k.kind}`, textContent: m[0], tabIndex: 0 });
+    const act = (ev) => { ev.stopPropagation(); k.kind === "dir" ? send(k.cmd) : showPop(w, k.kind, k.thing); };
+    w.addEventListener("click", act);
+    w.addEventListener("keydown", (ev) => { if (ev.key === "Enter") act(ev); });
+    b.append(w);
+    pos = m.index + m[0].length;
+  }
+  b.append(text.slice(pos));
+}
+
+// verb menu next to a clicked word
+const pop = Object.assign(document.createElement("div"), { id: "pop", hidden: true });
+document.body.append(pop);
+function showPop(anchor, kind, thing) {
+  if (!waiting) return;
+  menu = { kind, thing, give: null, inPop: true };
+  pop.replaceChildren(menuBox());
+  pop.hidden = false;
+  const r = anchor.getBoundingClientRect();
+  pop.style.left = `${Math.max(8, Math.min(r.left, innerWidth - pop.offsetWidth - 8))}px`;
+  pop.style.top = `${r.bottom + 6 + pop.offsetHeight > innerHeight ? r.top - pop.offsetHeight - 6 : r.bottom + 6}px`;
+}
+function hidePop() { pop.hidden = true; if (menu && menu.inPop) menu = null; }
+function refreshMenus() { render(); if (!pop.hidden && menu) pop.replaceChildren(menuBox()); }
+document.addEventListener("click", (e) => { if (!pop.hidden && !pop.contains(e.target)) hidePop(); });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") hidePop(); });
+
+function reflow(raw) {
+  const lines = raw.split("\n").map((l) => l.replace(/^ /, ""));   // Fortran carriage-control blank
+  const out = [];
+  for (let i = 0; i < lines.length; i++) {
+    let line = lines[i];
+    // a long prose line continues on the next one (lists and short lines stay)
+    while (i + 1 < lines.length && line.trimEnd().length >= 45 && lines[i + 1].trim() &&
+           !/^\s{3,}/.test(lines[i + 1])) {
+      const next = lines[++i].trim();
+      const t = line.trimEnd();
+      line = /\p{L}-$/u.test(t) && /^\p{Ll}/u.test(next) ? t.slice(0, -1) + next   // jedi-/nou
+                                                         : t + " " + next;
+    }
+    out.push(line.replace(/(\S) {2,}(?=\S)/g, "$1 "));
+  }
+  return out.join("\n");
+}
+
+// send(command, ...answers): answers go to the game's follow-up questions
+// (e.g. ZAPSAT asks for a file name)
+function send(line, ...answers) {
+  if (!waiting) return;
+  followups = answers;
+  line = line.trim().toUpperCase();
+  if (line) { history.push(line); histPos = history.length; }
+  append(" > " + line + "\n", "you");
+  menu = null;
+  pop.hidden = true;
+  const r = waiting; waiting = null;
+  side.querySelectorAll("button").forEach((b) => (b.disabled = true));
+  tail = "";
+  r(line);
+}
+
+// ---- side panel --------------------------------------------------------
+function el(tag, props = {}, ...kids) {
+  const e = Object.assign(document.createElement(tag), props);
+  e.append(...kids.filter((k) => k != null));
+  return e;
+}
+const chip = (label, onclick, cls = "") => el("button", { className: "chip " + cls, textContent: label, onclick, type: "button" });
+
+function render() {
+  side.replaceChildren();
+  if (!state) return;
+  const s = state;
+  side.append(el("h2", { textContent: "Kde jste" }),
+    el("div", { className: "place", textContent: s.roomName || `místnost ${s.room}` }));
+  if (!s.lit) side.append(el("div", { className: "muted", textContent: "Je zde tma." }));
+
+  side.append(el("h2", { textContent: "Východy" }),
+    s.exits.length ? el("div", { className: "chips" }, ...s.exits.map((x) =>
+      chip(x.label + (x.closed ? " 🔒" : ""), () => send(x.cmd), x.closed ? "closed" : "")))
+    : el("div", { className: "muted", textContent: "žádné zjevné" }));
+  if (s.compassNeeded) side.append(el("div", { className: "muted", textContent: "bez kompasu jen vpřed / vpravo / vzad / vlevo" }));
+
+  const group = (title, list, kind, empty) => {
+    side.append(el("h2", { textContent: title }));
+    if (!list.length) { side.append(el("div", { className: "muted", textContent: empty })); return; }
+    side.append(el("div", { className: "chips" }, ...list.map((t) =>
+      chip(kind === "person" ? t.word.toLowerCase() : t.name, () => openMenu(kind, t)))));
+    if (menu && !menu.inPop && menu.kind === kind && list.some((t) => t.id === menu.thing.id)) side.append(menuBox());
+  };
+  if (s.lit) {
+    group("Vidíte", [...s.here, ...s.fixed.map((f) => ({ ...f, fixed: true }))], "here", "nic zvláštního");
+    group("Je zde s Vámi", s.people, "person", "nikdo");
+  }
+  group("Výbava", s.inventory, "inv", "prázdno");
+
+  side.append(el("h2", { textContent: "Akce" }),
+    el("div", { className: "chips" }, ...QUICK.map((q) => chip(q.toLowerCase(), () => send(q), "verb"))));
+
+  if ($("debug").checked) {
+    const r = s.raw.ITST;
+    side.append(el("h2", { textContent: "Stav (COMMON /MMBC/)" }),
+      el("div", { id: "raw", textContent:
+        `místnost ITST(1)=${s.room}  tah ITST(5)=${s.turn}\nsměr ITST(4)=${r[3]}  světlo=${s.lit}\n` +
+        `ITST: ${r.join(" ")}` }));
+  }
+  renderSaves();
+  if (!waiting) side.querySelectorAll("button, input").forEach((b) => (b.disabled = true));
+}
+
+// ---- saved games: the game's own ZAPSAT/OBNOVIT, files kept in the browser
+function renderSaves() {
+  const saves = listSaves(mod);
+  side.append(el("h2", { textContent: "Uložené hry" }));
+  const name = el("input", { className: "savename", placeholder: "název", maxLength: 24, value: "HRA" + (saves.length + 1) });
+  const doSave = () => {
+    const n = saveName(name.value);
+    if (!n) return;
+    if (saves.includes(n)) deleteSave(mod, n);   // the game will not overwrite a file
+    send("ZAPSAT", n);
+  };
+  name.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); doSave(); } });
+  side.append(el("div", { className: "chips" }, name, chip("uložit", doSave, "verb")));
+  for (const n of saves) {
+    const del = confirmDelete === n
+      ? chip("opravdu smazat?", () => { deleteSave(mod, n); confirmDelete = null; render(); }, "closed")
+      : chip("×", () => { confirmDelete = n; render(); });
+    side.append(el("div", { className: "chips saverow" }, el("span", { textContent: n }),
+      chip("načíst", () => send("OBNOVIT", n), "verb"),
+      chip("stáhnout", () => download(n)), del));
+  }
+  const file = el("input", { type: "file", hidden: true });
+  file.addEventListener("change", async () => {
+    const f = file.files[0];
+    if (!f) return;
+    writeSave(mod, saveName(f.name.replace(/\.mmm$/i, "")) || "NAHRANA", new Uint8Array(await f.arrayBuffer()));
+    render();
+  });
+  side.append(el("div", { className: "chips" }, chip("nahrát ze souboru…", () => file.click()), file));
+}
+
+function download(n) {
+  const url = URL.createObjectURL(new Blob([readSave(mod, n)], { type: "application/octet-stream" }));
+  el("a", { href: url, download: `${n}.mmm` }).click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function openMenu(kind, thing) {
+  menu = menu && menu.thing.id === thing.id && menu.kind === kind ? null : { kind, thing, give: null };
+  render();
+}
+
+function menuBox() {
+  const { kind, thing } = menu;
+  const noun = thing.noun;
+  const box = el("div", { className: "menu" },
+    el("div", { className: "title", textContent: (kind === "person" ? thing.word.toLowerCase() : thing.name) + " → " }));
+  if (menu.give) {                     // second step: what to give
+    box.append(el("div", { className: "muted", textContent: `${menu.give.toLowerCase()} co?` }),
+      el("div", { className: "chips" }, ...state.inventory.map((it) =>
+        chip(it.name, () => send(`${menu.give} ${it.noun} ${noun}`)))));
+    return box;
+  }
+  const first = thing.verbs || VERBS[thing.fixed ? "fixed" : kind];
+  const verbs = el("div", { className: "chips" }, ...first.map((v) => chip(v.toLowerCase(), () => send(`${v} ${noun}`), "verb")));
+  if (kind === "person") verbs.append(...GIVE.map((v) =>
+    chip(v.toLowerCase() + "…", (e) => { e.stopPropagation(); menu.give = v; refreshMenus(); }, "verb")));
+  box.append(verbs);
+  const more = el("details", {}, el("summary", { textContent: "další slovesa" }),
+    el("div", { className: "chips" }, ...state.verbs.filter((v) => !first.includes(v))
+      .map((v) => chip(v.toLowerCase(), () => send(`${v} ${noun}`), "verb"))));
+  box.append(more);
+  return box;
+}
+
+// ---- game wiring -------------------------------------------------------
+function readLine(m) {
+  mod = m;
+  const answer = new Promise((resolve) => (waiting = resolve));
+  const main = /(^|\n) >\s*$/.test(tail);
+  if (!main && followups.length) {     // answer the game's question ourselves
+    const a = followups.shift();
+    append(a + "\n", "you");
+    const r = waiting; waiting = null; tail = "";
+    r(a);
+    return answer;
+  }
+  followups = [];
+  cmd.disabled = false;
+  cmd.placeholder = "";
+  // the panel is live only at the game's main " >" prompt; questions
+  // (ANO/NE, name, file name) are answered by typing
+  if (main && LANG !== "en") {
+    try { state = readState(mod); automap.visit(state); } catch (e) { console.error(e); state = null; }
+    drawMap();
+    render();
+    relink();
+    continueWalk();
+  } else {
+    side.querySelectorAll("button").forEach((b) => (b.disabled = true));
+    if (walk.steps.length) stopWalk("hra se na něco ptá");
+  }
+  cmd.focus();
+  return answer;
+}
+
+// ---- walking along the map: one game command per step, checked each time
+const walk = { steps: [], expect: null, timer: 0 };
+function startWalk(steps) {
+  stopWalk();
+  walk.steps = steps.slice();
+  continueWalk();
+}
+function stopWalk(why) {
+  clearTimeout(walk.timer);
+  if (why && walk.steps.length) append(`\n[Cesta přerušena: ${why}.]\n`, "sys");
+  walk.steps = []; walk.expect = null;
+}
+function continueWalk() {
+  if (walk.expect !== null && state && state.room !== walk.expect) {
+    walk.steps.length ? stopWalk("dopadlo to jinak, než mapa čekala") : stopWalk();
+    return;
+  }
+  if (!walk.steps.length) { walk.expect = null; return; }
+  walk.timer = setTimeout(() => {            // a short pause so each step is readable
+    const s = walk.steps.shift();
+    walk.expect = s.expect;
+    send(s.cmd);
+  }, 280);
+}
+
+form.addEventListener("submit", (e) => { e.preventDefault(); stopWalk(); const v = cmd.value; cmd.value = ""; send(v); });
+cmd.addEventListener("keydown", (e) => {
+  if (e.key === "ArrowUp" && histPos > 0) { cmd.value = history[--histPos]; e.preventDefault(); }
+  if (e.key === "ArrowDown") { histPos = Math.min(history.length, histPos + 1); cmd.value = history[histPos] ?? ""; e.preventDefault(); }
+});
+screen.addEventListener("click", () => { if (!window.getSelection().toString()) cmd.focus(); });
+$("debug").addEventListener("change", render);
+
+setMode((() => { try { return localStorage.getItem("mmm-view"); } catch { return null; } })());
+
+// language / version: switching starts a new game (separate saves per version)
+const LANG = (() => {
+  let l = null;
+  try { l = new URLSearchParams(location.search).get("lang") || localStorage.getItem("mmm-lang"); } catch { /* */ }
+  return l === "en" || l === "cz" ? l : "puvodni";
+})();
+document.querySelector(".app").classList.toggle("en", LANG === "en");
+document.documentElement.lang = LANG === "en" ? "en" : "cs";
+for (const l of ["cz", "puvodni", "en"]) {
+  const b = document.getElementById(`lang-${l}`);
+  b.setAttribute("aria-pressed", l === LANG);
+  b.addEventListener("click", () => {
+    if (l === LANG) return;
+    try { localStorage.setItem("mmm-lang", l); } catch { /* */ }
+    const u = new URL(location.href); u.searchParams.delete("lang"); location.href = u.href;
+  });
+}
+{
+  let s = null;
+  try { s = new URLSearchParams(location.search).get("styl") || localStorage.getItem("mmm-style"); } catch { /* */ }
+  if (s === "classic" || s === "klasika") setStyle("classic");
+  else if (s === "modern" || s === "moderni") setStyle("modern");
+  else document.getElementById("choose").classList.add("show");   // first visit: ask
+}
+
+startGame({
+  lang: LANG,
+  onOutput: (text) => { tail = (tail + text).slice(-200); gameText(text.replace(/^ ?> ?$/m, "")); },
+  readLine,
+  onExit: () => {
+    cmd.disabled = true;
+    cmd.placeholder = "konec hry · obnovte stránku pro novou záhadu";
+    append("\n[Hra skončila.]\n", "sys");
+    side.querySelectorAll("button").forEach((b) => (b.disabled = true));
+  },
+}).catch((err) => append("\n[Chyba: " + err + "]\n", "sys"));
+</script>
+<script>
+// PWA: offline cache + "nainstalovat" button where the browser offers installation
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
+let installPrompt = null;
+addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  installPrompt = e;
+  document.getElementById("install-wrap").hidden = false;
+});
+document.getElementById("install").addEventListener("click", async () => {
+  if (!installPrompt) return;
+  installPrompt.prompt();
+  await installPrompt.userChoice;
+  installPrompt = null;
+  document.getElementById("install-wrap").hidden = true;
+});
+addEventListener("appinstalled", () => { document.getElementById("install-wrap").hidden = true; });
+</script>
+</body>
+</html>

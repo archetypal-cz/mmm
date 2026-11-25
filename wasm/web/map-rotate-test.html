@@ -1,0 +1,23 @@
+<!doctype html><meta charset="utf-8">
+<style>body{margin:0;background:#0d1110;display:flex;gap:8px}svg{width:420px;height:320px;border:1px solid #333}
+.edge{stroke:#3d5a4c;stroke-width:3}.edge.stub{stroke:#2c4238}.q{fill:#4f7563;font-size:15px;text-anchor:middle}
+.room rect{fill:#142019;stroke:#35503f}.room text{fill:#b8f0c0;font:12px monospace;text-anchor:middle}
+.room.here rect{fill:#2c2a17;stroke:#f3e3a1}</style>
+<script type="module">
+// Synthetic test of map rotation: a cross of rooms N/E/S/W of room 1.
+import { AutoMap } from "./map.js";
+const names = { 1: "střed", 2: "sever", 3: "východ", 4: "jih", 5: "západ" };
+const links = { 1: [[1, 2], [2, 3], [3, 4], [4, 5]], 2: [[3, 1]], 3: [[4, 1]], 4: [[1, 1]], 5: [[2, 1]] };
+const exitsOf = (r) => (links[r] || []).map(([dir, target]) => ({ dir, target, closed: false }));
+localStorage.clear();
+const m = new AutoMap();
+const base = { mystery: 1, lit: true, exitsOf, nameOf: (r) => names[r], exits: [] };
+m.visit({ ...base, room: 1 });
+for (const r of [2, 3, 4, 5]) m.visit({ ...base, room: r });
+for (const f of [1, 2, 3, 4]) {
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  document.body.append(svg);
+  m.render(svg, { ...base, room: 1, compassNeeded: true, facing: f }, () => {});
+  svg.insertAdjacentHTML("beforeend", `<text x="${svg.viewBox.baseVal.x + 10}" y="${svg.viewBox.baseVal.y + 20}" fill="#8fd3ff" font-size="16">pohled ${"SVJZ"[f - 1]} → nahoru</text>`);
+}
+</script>
