@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dvě písmena do jednoho slova · Magical Mystery Mansion</title>
+<meta name="description" content="Jak se celý strašidelný zámek vešel do 64 kilobajtů, proč ho programátoři luštili na traktorovém papíře a co to udělalo s jejich mozky. Esej k webové verzi české textovky z let 1982–1988.">
+<meta name="theme-color" content="#0d1110">
+<link rel="icon" href="favicon-48.png" type="image/png">
+<!-- og:image should be an absolute URL: fill in the domain once it is chosen -->
+<meta property="og:type" content="article">
+<meta property="og:locale" content="cs_CZ">
+<meta property="og:site_name" content="Magical Mystery Mansion">
+<meta property="og:title" content="Dvě písmena do jednoho slova">
+<meta property="og:description" content="Jak se celý strašidelný zámek vešel do 64 kilobajtů, proč ho programátoři luštili na traktorovém papíře a co to udělalo s jejich mozky.">
+<meta property="og:image" content="og-esej.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ASCII-art zámeček se dvěma věžemi a jedním rozsvíceným oknem na zeleném terminálu">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  :root { --bg: #0d1110; --fg: #d6e8d8; --dim: #7fa287; --hot: #8fd3ff; --you: #f3e3a1; --box: #121a17; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg);
+    font: 18px/1.7 Georgia, "Iowan Old Style", "Palatino Linotype", serif; }
+  main { max-width: 40rem; margin: 0 auto; padding: 3rem 1.25rem 5rem; }
+  nav { font: 14px/1.4 "Cascadia Mono", Consolas, monospace; color: var(--dim); }
+  nav a { color: var(--hot); }
+  h1 { font-size: 2.3rem; line-height: 1.15; margin: 2rem 0 .5rem; color: var(--you); }
+  .sub { color: var(--dim); font-style: italic; margin-bottom: 2.5rem; }
+  h2 { font-size: 1.35rem; margin: 3rem 0 .8rem; color: var(--hot); }
+  p { margin: 0 0 1.1rem; hyphens: auto; }
+  em { color: #e9f3ea; }
+  code, pre { font-family: "Cascadia Mono", "JetBrains Mono", Consolas, monospace; font-size: .82em; }
+  code { color: var(--you); }
+  pre { background: #0a0e0c; border-left: 3px solid #2f4a3c; padding: .9rem 1rem; overflow-x: auto;
+    line-height: 1.45; color: #b8f0c0; margin: 1.2rem 0 1.4rem; }
+  aside { background: var(--box); border: 1px solid #23322b; border-radius: .4rem;
+    padding: 1rem 1.2rem; margin: 1.8rem 0; font-size: .92em; }
+  aside b { color: var(--you); font-family: "Cascadia Mono", Consolas, monospace; font-size: .85em;
+    letter-spacing: .06em; text-transform: uppercase; display: block; margin-bottom: .4rem; }
+  .sig { color: var(--dim); font-style: italic; margin-top: 3rem; }
+  a { color: var(--hot); }
+  /* header: title on the left, the mansion as phosphor ASCII art on the right
+     (same drawing as the app icon); stacked on narrow screens */
+  .top { display: flex; align-items: center; gap: 1.6rem; margin: 2rem 0 2.5rem; }
+  .top > div { flex: 1; min-width: 0; }
+  .top h1 { margin-top: 0; }
+  .top .sub { margin-bottom: 0; }
+  pre.hero { flex: none; background: none; border: none; padding: 0; margin: 0; overflow: visible;
+    font-size: 15px; line-height: 1.08; font-weight: 700; color: #b8f0c0;
+    text-shadow: 0 0 .22em rgba(184, 240, 192, .55); }
+  pre.hero .y { color: var(--you); text-shadow: 0 0 .35em var(--you), 0 0 .8em rgba(243, 227, 161, .5); }
+  pre.hero .d { color: #6f9c77; text-shadow: none; }
+  @media (max-width: 600px) {
+    .top { flex-direction: column-reverse; align-items: flex-start; gap: 1.2rem; }
+    pre.hero { font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+<main>
+<nav><a href="index.html">← zpět do zámečku</a> · Magical Mystery Mansion · esej</nav>
+
+<header class="top">
+<div>
+<h1>Dvě písmena do jednoho slova</h1>
+<p class="sub">aneb jak se celý strašidelný zámek vešel do 64 kilobajtů, proč ho programátoři
+luštili na traktorovém papíře a co to udělalo s jejich mozky</p>
+</div>
+<pre class="hero" role="img" aria-label="ASCII-art zámeček se dvěma věžemi a jedním rozsvíceným oknem">  |&gt;          |&gt;
+  /\    /\    /\
+ /  \__/  \__/  \
+ |<span class="d">[]</span>| <span class="d">[]</span>  <span class="d">[]</span> |<span class="y">[]</span>|
+ |<span class="d">[]</span>| <span class="d">[]</span>  <span class="d">[]</span> |<span class="d">[]</span>|
+ |<span class="d">[]</span>|  _/\_  |<span class="d">[]</span>|
+_|__|__|  |__|__|_</pre>
+</header>
+
+<p>Vážení čtenáři, než se zase pustíte do sklepení, zkuste na chvíli zapomenout, co
+máte v kapse. Ten placatý kus skla, který umí přehrát film, přeložit jídelní lístek
+z korejštiny a mezitím vám připomenout, že jste dnes ušli jen 2 300 kroků, má
+zhruba stotisíckrát víc paměti, než kolik jí najednou viděl program na stroji,
+kde tahle hra vznikla. Ne stokrát.
+Stotisíckrát. A ten stroj nebyl žádná hračka: stál ve skříni velikosti pořádné
+lednice, měl vlastní klimatizaci a lidé se k němu objednávali jako
+k zubaři.</p>
+
+<p>Magical Mystery Mansion, hru, kterou máte otevřenou vedle tohohle textu (doufám, že
+jste ji neopustili uprostřed honičky s upírem), napsali v letech 1982–83 P. Lampa
+a B. Michal. Předlohou jim byla anglická hra <em>Mystery Mansion</em> Billa Wolperta. V roce
+1988 ji S. Matýšek přenesl pod MS-DOS. Pojďme se podívat, jak takové věci tehdy
+vznikaly. A taky co to provádělo s hlavami lidí, kteří je psali.</p>
+
+<h2>Minipočítač, aneb „mini“ je relativní pojem</h2>
+
+<p>Původní Mystery Mansion i česká verze běžely na počítačích řady
+<em>HP 1000</em>, které Hewlett-Packard vyráběl od poloviny sedmdesátých let. Říkalo
+se jim minipočítače. Slovo „mini“ tu ale znamená jen to, že se vešly do jedné
+místnosti a nemusely mít vlastní budovu jako sálové počítače. Pokud si
+představujete něco, co se dá odnést pod paží, představujete si to špatně. Spíš
+regál se zdroji, deskami plnými čipů, diskovou jednotkou o velikosti pračky a
+magnetickou páskou, která se ve filmech té doby tak důležitě točila.</p>
+
+<p>Operační systém se jmenoval <em>RTE</em>, Real-Time Executive, a staral se
+o spoustu věcí, nad kterými dnes nikdo ani nepřemýšlí. Třeba o to, aby se o jeden stroj mohlo
+dělit víc lidí u víc terminálů. Terminál nebyl počítač, byla to obrazovka
+s klávesnicí na kabelu, takové okénko do skříně v jiné místnosti. A pak tu byla
+tiskárna: hlučný stroj, který chrlil nekonečný pás papíru s dírkami po obou okrajích.
+Ten papír se skládal do harmoniky a říkalo se mu, s typickou technickou poezií,
+<em>traktorový</em>. Pisatel těchto řádků si jako malý kluk představoval, že papír
+tiskárnou táhne nějaký malý traktor, jako pluh po poli. Až mnohem později mu došlo, že se
+vlastně netrefil tak špatně: traktor i <em>trakce</em> pocházejí z latinského <em>trahere</em>,
+táhnout, a anglický <em>tractor feed</em> je podavač, jehož kolečka s trny zapadají
+do dírek a papír opravdu táhnou.</p>
+
+<aside>
+<b>Čísla pro nerdy</b>
+HP 1000 byl šestnáctibitový. Jeden program viděl najednou 32 768 slov paměti, tedy
+64 KB. Do toho se musel vejít kód, data i kus operačního systému. Když se program
+nevešel (a hra o téměř sto místnostech se opravdu nevešla), musel se rozsekat na
+<em>segmenty</em>, které se z disku natahovaly podle potřeby. Proto má MMM soubory
+MMSA až MMSK: každé písmeno je jeden kus programu (pohyb, slovesa, výpisy textů),
+který se do paměti dostal, teprve když na něj přišla řada.
+</aside>
+
+<h2>Co si o počítačích myslel svět</h2>
+
+<p>Na Západě měl počítač dvě tváře. První byla hollywoodská: HAL 9000 z roku 1968
+zdvořile odmítá otevřít dveře a o patnáct let později málem odpálí jaderné
+rakety jistý kluk s modemem ve filmu <em>WarGames</em>. Druhá byla kancelářská:
+mzdy, sklady, pojišťovny. Počítač byl buď hrozbou lidstvu, nebo nudným účetním. Že by
+na něm někdo hrál detektivku se strašidly, nečekal skoro nikdo.</p>
+
+<p>U nás to bylo ještě zajímavější. Úřední jazyk mluvil o „samočinných počítačích“,
+o „výpočetní technice“ a hlavně o „vědeckotechnické revoluci“, která měla
+socialismu zajistit náskok. Ve skutečnosti platilo západní embargo (výbor
+COCOM hlídal, aby se moderní technika nedostala za železnou oponu) a
+domácí a sovětské stroje řady JSEP a SMEP marně doháněly něco, co jim dávno ujelo. Počítač
+byl vzácný, drahý a patřil „výpočetnímu středisku“. Strojový čas se plánoval.
+A když někdo v tom drahém, plánovaném, vědeckotechnicky revolučním čase napsal hru
+o strašidelném zámku, byla to činnost lehce podvratná: bavila a dělala se pro
+radost, a to se v plánu vykázat nedalo.</p>
+
+<p>Že to autoři věděli, prozrazují samotné zdrojáky. Ve vypnuté části kódu leží
+hláška pro případ, že by se nepovedlo otevřít datový soubor. Hra by vám oznámila,
+že se při poslední návštěvě „povedlo jednomu nejmenovanému programátoru zcela
+zničit tajemný zámek i s jeho blízkým okolím“, a doporučila by obrátit se na <em>SRPP</em>: službu
+restaurace programových her, „jejíž pobočka zajisté existuje i ve Vašem výpočetním
+středisku“. Kdo někdy vyplňoval formulář na podatelně, ten tón pozná.</p>
+
+<h2>Programovat znamenalo počítat sloupce</h2>
+
+<p>MMM je napsaná ve Fortranu, jazyce z roku 1957 určeném původně pro vědce a
+inženýry. Fortran té doby měl vlastnosti, které dnešního programátora rozpláčou.
+První: řádek programu měl pevné sloupce. Pozice 1 až 5 patřily číslu
+návěští. Pozice 6 byla vyhrazená pro znak, který říkal „tohle pokračuje
+z předchozího řádku“. Samotný příkaz směl být jen ve sloupcích 7 až 72. Co bylo
+dál, počítač vůbec nečetl. Proč zrovna 72? Protože děrný štítek měl 80 sloupců a
+posledních osm se nechávalo na pořadové číslo, aby šel balík štítků po pádu na zem
+zase srovnat. Jo, opravdu.</p>
+
+<pre>C     *** zpracovani chodby ***
+C
+ 1080 IF ((IR.GT.35).AND.(IR.LT.41))ITST(12)=ITST(12)-ITST(5)+ITST(13)
+      IF ((IR.GT.35).AND.(IR.LT.41).AND.(ITST(12).GT.0)) THEN
+ 1082    F='(/'' Stěny chodby se svírají.'')'</pre>
+
+<p>Druhá vlastnost: Fortran IV, ve kterém vznikl anglický originál, neměl pořádné
+textové proměnné (přinesl je až Fortran 77 a hra si starý zvyk nechala). Text se
+ukládal do celočíselných proměnných, dvě písmena do jednoho šestnáctibitového slova.
+Tomu se říkalo hollerithovské konstanty, po Hermanu Hollerithovi, který děrnými
+štítky sčítal americké obyvatelstvo v roce 1890. Slovo <code>SEVERNĚ</code>
+tak v paměti zabírá čtyři čísla. Když chce hra zjistit, jestli jste napsali
+„SEVERNĚ“, porovnává čtyři čísla. Když chce vypsat třetí písmeno, musí slovo
+rozpůlit a vytáhnout správný bajt. Na to má MMM vlastní podprogram <code>SGET</code>.</p>
+
+<p>Třetí vlastnost: když je drahé každé slovo, šetří se i na číslech. Údaje o místnosti
+nejsou v přehledné struktuře s pojmenovanými položkami, ale v jediném čísle, kde jednotlivé číslice
+znamenají různé věci. Číslo <code>15210</code> v tabulce místností podle všeho
+říká: desetitisíce = záclony zatažené, tisíce a stovky = kolik bodů je tu k mání
+(s posunem o 50, takže 52 znamená dva body), poslední dvě číslice = které jméno
+se vypíše. Předměty, postavy i východy jsou zakódované
+stejně. Celý zámek je velká tabulka čísel. Kdo ji chtěl číst, musel v hlavě
+nosit klíč k šifře.</p>
+
+<aside>
+<b>Česká specialita: skloňování v roce 1982</b>
+Angličtina má to štěstí, že „lantern“ je pořád „lantern“. Čeština ne: vzít lucernu,
+podívat se na lucernu, svítit lucernou. Česká verze proto přidala funkci
+<code>IWORD</code>, podepsanou „17-09-1982 BM“. Odtrhne konec slova a zkouší pádové
+koncovky z tabulky. Díky ní hra rozumí „VZÍT LOPATKU“ i „PODÍVAT SE NA KRTKA“,
+přestože ve slovníku má „LOPATKA“ a „KRTEK“. Je to malá lingvistická hádanka
+vyřešená ve zhruba 140 řádcích Fortranu, na stroji, kde se šetřilo každým slovem.
+</aside>
+
+<p>A pak tu byl skok. Fortran má příkaz <code>GOTO</code>, který znamená „teď
+pokračuj úplně jinde“. MMM ho používá všude. Program se nečte odshora dolů, ale
+jako gamebook: <em>pokud jste v chodbě a máte amulet, pokračujte na řádku 1084</em>.
+Dnešní učebnice před tímhle stylem varují velkými písmeny. Tehdy to byla prostě
+nejkratší cesta z bodu A do bodu B, a často jediná.</p>
+
+<h2>Hádej, na co myslím: parser jako soupeř</h2>
+
+<p>Hráč té doby neměl tlačítka ani nápovědu v rohu obrazovky. Měl blikající
+kurzor a jedno nepsané pravidlo: hra rozumí jen slovům, která zná, a
+neprozradí, která to jsou. Textovka byla vlastně dvě hry v jedné. V té první jste
+řešili vraždu ve strašidelném zámku. V té druhé jste luštili, co si myslí program.
+Ta druhá byla často těžší.</p>
+
+<p>Zkuste si to. Stojíte před bránou, chcete jít na sever, tak napíšete, co by
+napsal každý normální člověk:</p>
+
+<pre> &gt;SEVER
+ Můj vstupní slovník neobsahuje slovo SEVER
+ &gt;JÍT NA SEVER
+ Můj vstupní slovník neobsahuje slovo SEVER
+ &gt;JÍT SEVERNĚ
+ Brána je zavřená
+ &gt;OTEVŘÍT BRÁNU
+ Brána je pro Vás samotného příliš těžká.</pre>
+
+<p>Tři pokusy, než pochopíte, že hra chce příslovce, a pak zjistíte, že stejně
+nikam nepůjdete. A tak pořád dokola. Napíšete „VZÍT VŠECHNO“ a hra oznámí,
+že slovo VŠECHNO nezná. Zkusíte se zeptat „KDE JSEM?“ a dozvíte se, s klidem
+úředníka za přepážkou:</p>
+
+<pre> Neodpovídám na žádné otázky. Pouze reaguji na Vaše akce</pre>
+
+<p>Když chcete dát lesníkovi lopatku a napíšete to česky správně, tedy
+„DÁT LOPATKU LESNÍKOVI“, hra se ohradí, že <em>Slovo je příliš dlouhé</em>.
+LESNÍKOVI má devět písmen a slovník jich čte jen osm. Když zkrátíte na „DÁT“,
+dostanete jednu z nejkrásnějších vět české počítačové historie:</p>
+
+<pre> Možná nejsem pozorným čtenářem, ale musíte mi říct, co chcete DÁT</pre>
+
+<p>Hra má i svou hrdost. Na sprosté slovo (a ano, slovník jich pár obsahuje,
+od BLBEČKU po VOLE, protože autoři dobře věděli, co hráči v zoufalství
+napíšou) odpoví třeba <em>Moc si troufáš, cizinče !</em> nebo
+<em>Zkus se alespoň chvilku chovat jako člověk !</em> S mezerou před vykřičníkem,
+která k těm časům nějak patří. A když máte štěstí, vrátí vám to i s úroky,
+ve verších:</p>
+
+<pre> Blbče tupče omezenče,
+ krávo savče vykulenče,
+ zřícenino  balvane,
+ kozí bobku, havrane !</pre>
+
+<p>Tohle v žádném zadání nestálo. Někdo to tam dal, protože ho to bavilo,
+a představoval si, jak se bude u terminálu smát hráč, který zrovna
+ztratil nervy. A takových drobností je ve hře víc. Když se lesníka vyptáváte
+příliš dlouho, dozvíte se, že „začíná být opravdu znechucen Vašimi dotazy“. A když chcete
+v lese spát, hra suše poznamená: <em>Nemáte tady pohodlí.</em></p>
+
+<aside>
+<b>Proč hra mluví takhle</b>
+Ty krkolomné hlášky nejsou lenost, jsou to stopy techniky. Text se skládal
+z pevných kousků: <code>„Vaše výbava obsahuje “</code> a za tím slovo, které
+hráč napsal. Proto hra opakuje vaše vlastní tvary („obsahuje LOPATKU“) a nesklání
+je. Mezery uvnitř vět („LESNÍK&nbsp;&nbsp;&nbsp;začíná být“) jsou zbytky
+osmiznakových políček doplněných mezerami. Občas chybí háček, například „Jako prvni
+slovo očekávám sloveso“, nejspíš proto, že čeština do hry přibývala postupně a
+nějaká věta se při převodu prostě přehlédla. A popis cesty u zdi slibuje les „ZAPADNĚ“, bez čárky nad A. Dnes bychom
+to opravili, ale pak by to nebyl tenhle zámek.
+</aside>
+
+<p>Výsledkem byl zvláštní druh společné řeči. Hráč se naučil mluvit jako hra:
+krátce, rozkazovacím způsobem a bez zbytečných slov. JÍT SEVERNĚ. VZÍT LUCERNU.
+ROZSVÍTIT LUCERNU. Skoro jako na vojně, jen místo nepřítele máte
+upíra. Kdo to vydržel, měl za odměnu pocit, že stroj opravdu poslouchá. Kdo ne,
+napsal VOLE a dozvěděl se, že si moc troufá.</p>
+
+<p>Proto má webová verze dvě podoby. V té <em>klasické</em> je jen terminál, kurzor
+a vy, přesně jako tehdy, včetně hledání těch správných slov, které ke hře prostě patří. V té
+<em>moderní</em> máte vedle textu panel s věcmi, osobami a východy, slovesa na
+kliknutí a mapu. Hra je v obou případech tatáž, jen se jinak hledá společná řeč.</p>
+
+<h2>Kolik se toho vejde do hlavy</h2>
+
+<p>Teď to hlavní. Představte si, že tenhle program ladíte. Nemáte debugger, který
+by vám ukázal hodnotu proměnné. Nemáte vyhledávání, nemáte barevné zvýrazňování,
+nemáte ani pořádnou obrazovku: terminál ukáže čtyřiadvacet řádků. A každá
+kompilace trvá tak dlouho, že si ji dvakrát rozmyslíte. Máte výpis: harmoniku
+traktorového papíru, která se roztáhne přes celý stůl a kus chodby. A tužku.</p>
+
+<p>Abyste našli chybu, musíte program <em>spustit v hlavě</em>. Musíte vědět, že
+<code>ITST(1)</code> je místnost, kde hráč stojí, <code>ITST(5)</code> čas,
+<code>IXT</code> tabulka 360 východů rozdělená po šedesáti podle šesti směrů (čtyři
+světové strany, nahoru a dolů),
+a že číslo větší než 20 000 znamená zavřené dveře. Musíte sledovat skoky, které
+vás pošlou o tři metry papíru dál, a pamatovat si, odkud jste přišli. Jenže lidský
+mozek na nic takového stavěný není.</p>
+
+<p>Psycholog George Miller v roce 1956 napsal slavný článek o „magickém čísle
+sedm, plus minus dvě“: zhruba tolik položek udrží člověk najednou v krátkodobé
+paměti. Pozdější výzkumy (třeba Nelson Cowan kolem roku 2000) jsou ještě
+skromnější a mluví spíš o čtyřech. Čtyři věci. A program má stovky proměnných a
+tisíce řádků.</p>
+
+<p>Jak to tedy ti lidé dokázali? Odpověď má jméno <em>chunking</em>, česky
+nejspíš „shlukování“. Mozek se naučí slepovat drobnosti do větších celků a s těmi
+pak zachází jako s jednou položkou. Herbert Simon a William Chase v roce 1973
+ukázali, že šachoví mistři si zapamatují pozici na šachovnici po pár vteřinách
+pohledu. Ne proto, že by měli lepší paměť, ale proto, že nevidí 25 figurek. Vidí
+„rošádu na královském křídle“ a „slabého střelce“, tedy pět nebo šest celků. Když
+jim figurky rozmístíte náhodně, je jejich výhoda skoro pryč. Programátor nad
+výpisem MMM po pár týdnech nevidí <code>IF (IFSD(IXT(J)).EQ.IR) GOTO 1015</code>.
+Vidí „hledá východ z místnosti“. Jedna položka místo třiatřiceti znaků.</p>
+
+<p>A tady vstupuje do hry neuroplasticita, schopnost mozku přestavět se podle
+toho, co po něm chceme. Nejznámější důkaz pochází od londýnských taxikářů. Ti se
+roky biflují spleť pětadvaceti tisíc ulic. Eleanor Maguire s kolegy v roce
+2000 ukázala, že mají zadní část hipokampu, oblasti spojené s prostorovou pamětí,
+větší než lidé, kteří taxi neřídí. A čím déle jezdili, tím víc. Mozek se nenarodil
+s mapou Londýna. Udělal si ji, protože jinak by tu práci dělat nešlo.</p>
+
+<p>S programátory osmdesátých let to bylo podobné. Nikdo se nenarodil s tím, že
+mu sloupce 7 až 72 a dvě písmena v jednom slově připadají přirozené. Ale když
+jiná možnost není, hlava se přizpůsobí. Drží celou mapu zámku, čte
+čísla jako slova a slova jako čísla, a v jednu ráno nad výpisem najednou vidí, že
+podprogram pro tmu se nevrací tam, kam by měl. Je to jako učit se cizí jazyk
+rovnou v cizině: ze začátku nerozumíte ničemu a jednoho dne zjistíte, že v něm sníte.</p>
+
+<aside>
+<b>Mentální emulátor</b>
+Dnes říkáme, že program „běží v emulátoru“, když jeden počítač předstírá, že je
+jiný. Programátoři té doby byli emulátory biologickými: celý stroj HP 1000 i s jeho
+registry, pamětí a tabulkami simulovali ve vlastní hlavě, s pomocí tužky a
+papíru. Pomalu, s chybami, a přesto natolik dobře, že výsledek fungoval.
+</aside>
+
+<h2>Rok 1988: zámek se stěhuje do DOSu</h2>
+
+<p>Mezitím se svět změnil. Na stolech se objevila PC s MS-DOSem a Microsoft
+Fortranem, se kterými mohl člověk programovat bez rezervace strojového času.
+S. Matýšek tehdy vzal zdrojáky z HP 1000 a přenesl je. Znělo to jednoduše,
+Fortran jako Fortran, ale jednoduché to nebylo. Na HP znamenalo „nahraj segment“ skok, ze kterého
+se program už nevracel. DOS verze potřebovala, aby se segmenty slušně vracely do
+hlavní smyčky. Stovky takových míst bylo potřeba přepsat ručně a pečlivě, a ve
+zdrojácích je dodnes vidět staré volání v komentáři hned nad novým.</p>
+
+<p>Tři taková místa ale zůstala nepřepsaná a pár dalších drobností sahalo do paměti tam, kam
+nemělo. V DOSu to většinou prošlo, protože DOS nikoho nehlídal: když program
+zapsal na špatné místo, nic se nestalo, nebo se stalo něco divného až o deset tahů
+později. Takové chyby se hledají nejhůř. Nehlásí se, jen občas pokazí hru tak, že
+nevíte, jestli je to chyba, nebo strašidlo. A na jejich hledání jste měli zase jen
+výpis na traktorovém papíře a vlastní hlavu.</p>
+
+<p>Když jsme v roce 2026 tytéž zdrojáky přeložili moderním překladačem a nechali
+hru tisíckrát automaticky hrát s náhodnými příkazy, dnešní operační systém většinu
+takových chyb okamžitě zastavil a ukázal přesný řádek. Za odpoledne se tak
+našlo, co se v roce 1988 bez nástrojů hledalo měsíce. Nejsou za tím chytřejší
+lidé, ale lepší nástroje. Ty nástroje ale postavili lidé, kteří se
+programovat naučili právě nad traktorovým papírem. (Celý seznam nálezů i s
+vysvětlením je v deníku oprav, který k projektu patří.)</p>
+
+<h2>A teď v prohlížeči</h2>
+
+<p>Hra, kterou máte v sousední záložce, není předělávka ani napodobenina. Je to
+tentýž Fortran z let 1982–1988 (s pár opravami popsanými výše), přeložený
+nástrojem f2c do jazyka C a z něj kompilátorem Emscripten do WebAssembly, tedy
+do strojového kódu, kterému rozumí váš prohlížeč. Na důkaz jsme stovky náhodných
+her nechali odehrát v prohlížeči i v klasickém přeloženém programu a porovnali
+výstup. Liší se ve stejném počtu písmen, jako se liší dvě kopie téže knihy:
+v žádném.</p>
+
+<p>Kód psaný pro stroj velikosti lednice tak dnes běží v telefonu. Dvě písmena
+pořád sedí v jednom slově, tabulky jsou pořád plné tajemných čísel a podprogram
+<code>IWORD</code> pořád skloňuje krtka. Jen kolem toho všeho přibyla tlačítka a
+mapa, abyste nemuseli hodinu hledat sloveso, které hra zrovna
+chce. To je jediný luxus, který jsme si dovolili.</p>
+
+<h2>Vrstvy, vrstvy, vrstvy</h2>
+
+<p>Teď si to porovnejme. Celý stav hry, tedy kde stojíte, co nesete, kdo je vrah,
+které dveře jsou zamčené a kolik je hodin, se vejde do 3 666 bajtů. Zdroják má
+11 366 řádků Fortranu. Na to, aby tohle všechno v roce 2026 běželo v okně
+prohlížeče, jsme kolem toho postavili věž, nad kterou by se autoři z roku 1982
+nejspíš chytili za hlavu.</p>
+
+<p>Pojďme odspodu. Původní Fortran nejdřív projde skriptem v Pythonu, který ho
+učeše pro dnešní překladače. Pak ho nástroj f2c přepíše do jazyka C. Céčko
+přeloží Emscripten, který stojí na překladači LLVM, do WebAssembly. Výsledek
+nahraje JavaScript, ten spustí prohlížeč, prohlížeč běží na operačním systému a
+ten na procesoru, který si mimochodem každou instrukci ještě sám rozloží na menší.
+Překladače i testovací prohlížeč přitom žijí v kontejnerech Dockeru, aby se
+nepohádaly s ostatním softwarem na počítači. Jen samotný prohlížeč má desítky
+milionů řádků kódu. Jedenáct tisíc řádků zámku sedí na vrcholu té hory jako
+kaplička na Sněžce.</p>
+
+<p>A ta hora je neuvěřitelně rychlá. Hru jsme nechali tisíckrát po sobě odehrát
+automatického „hráče“, který zadával náhodné příkazy, po třech stech tazích na
+partii. Je to tři sta tisíc tahů. Kdyby je hrál člověk u terminálu tempem jednoho
+tahu za pět vteřin, seděl by u toho bez přestávky přes dva týdny. Dnešnímu
+notebooku to trvalo necelých třináct vteřin. Hned potom se dvě stě takových partií
+odehrálo dvakrát: jednou v klasickém přeloženém programu, jednou v prohlížeči.
+Výstupy se porovnaly bajt po bajtu a byly totožné. Na stroji, kde zámek
+vznikl, by se o takovém testu nikomu ani nesnilo. Strojový čas byl drahý a na to,
+abyste ho pálili hraním vlastní hry, by vám vedoucí střediska nejspíš řekl něco
+podobného jako hra na slovo VOLE.</p>
+
+<aside>
+<b>A kdo to celé rozluštil?</b>
+Část práce v roce 2026 odvedl jazykový model, umělá inteligence, která čte a píše
+kód. Přečetla jedenáct tisíc řádků Fortranu s českými komentáři bez háčků,
+rozšifrovala čísla jako <code>15210</code>, poznala, že kontrola tmy volá segment po
+staru, a napsala skripty, které zámek přenesly do dnešních nástrojů. Co by kdysi
+zabralo týdny listování výpisem, šlo za pár odpolední. Neomylná ale není: proto
+musela každá změna projít automatickými testy, a tuhle esej po ní ještě
+přečetl druhý, nezávislý ověřovatel. Našel v ní sedm nepřesností, mimo jiné i to,
+že ve verši o kozím bobku bylo o jedno „n“ víc.
+</aside>
+
+<p>V tom je zvláštní kruh. Programátoři osmdesátých let museli celý stroj nosit
+v hlavě, protože jiný nástroj neměli. Dnešní nástroje nosí v sobě tolik vrstev,
+že je v celé šíři nedrží v hlavě nikdo. A přesto, nebo možná právě proto, umí
+stroj za odpoledne rozluštit, co lidé kdysi stavěli měsíce. Jen to rozluštění by
+nebylo k ničemu, kdyby předtím někdo nesedl k terminálu a nenapsal, že brána je
+pro Vás samotného příliš těžká.</p>
+
+<h2>Na závěr: proč se za to nestydět</h2>
+
+<p>Traduje se, že ti, kdo v osmdesátých letech seděli nad výpisy, byli
+podivíni, kteří utíkali od skutečného světa. Možná. Ale podívejte se, co přitom
+dělali: učili mozek věc, ke které nebyl stavěný, jen proto, že je to zajímalo. Byla
+to dřina a zároveň hra. A v tomhle případě dokonce doslova hra
+o strašidelném zámku.</p>
+
+<p>Takže až se budete příště motat v točivém bludišti a mapa se vám bude zdát
+zmatená, vzpomeňte si, že ji někdo kdysi kreslil tužkou na zadní stranu výpisu.
+A pak klikněte na místnost a nechte počítač dojít tam za vás. Tohle si zasloužíte.</p>
+
+<p class="sig">Pro webové vydání Magical Mystery Mansion, Archetypal.cz, 2026.
+Věnováno všem, kdo kdy nad traktorovým papírem hledali chybu v jednu ráno.</p>
+</main>
+</body>
+</html>
