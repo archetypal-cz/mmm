@@ -1,0 +1,25 @@
+     MMM je z bavnì vìukovì program pro pr ci s textem.  Vyskytuj¡ se v nØm
+objekty Ÿi jevy ze souŸasnosti  (ZHADA s detektivn¡ z pletkou),  poh dkov‚
+minulosti (napı. trpasl¡ci, v¡ly, skı¡tci, up¡ıi apod.) i budoucnosti (pıenos
+hmoty).  PoŸ¡taŸ V m pıedkl d  r…zn‚ situace a vy na nØ reagujete.  Typick‚
+pı¡kazy jsou napı.  J’T SEVERN·,  ROZHLDNOUT SE,  J’T VPRAVO,  POSLOUCHAT,
+D’VAT SE NA ..., VZ’T ..., ODLO¦IT ..., VíBAVA, atd. Slovn¡k poŸ¡taŸe obsahuje
+nØkolik set vìraz…, kter‚ m…§ete pıi dostateŸn‚ pozornosti poznat, budete-li
+s poŸ¡taŸem pıimØıenØ komunikovat.
+     Vçechny Vaçe akce jsou bodov ny; c¡lem hry je z¡skat  co nejv¡ce  bod….
+Vìsledkem je hodnocen¡ od §alostn‚ho detektiva a§ po supermana (12 kategori¡).
+Pokud se V m  podaı¡ vyıeçit  vçechny z hady  tajupln‚ho z mku  (zjistit vraha
+a odevzdat ho policii, proniknout k pokladu a naj¡t klenoty, diamanty a dalç¡
+cennosti, atd.) a ve zdrav¡ se vr tit, z¡sk te nejen body, ale urŸitØ ani bØ§n 
+pr ce s poŸ¡taŸem pro V s pak nebude probl‚mem. Situace a objekty v pr…bØhu
+ıeçen¡ vyu§¡vejte samozıejmØ tak, jak to jde - napı. se m…§ete £ŸinnØ br nit
+pıi napaden¡, m te-li ve vìbavØ nØjakou zbraå.
+     Nebudete-li cht¡t ve hıe pokraŸovat, pı¡kaz KONEC hru ukonŸ¡. Pıedt¡m
+si ovçem m…§ete zaznamenat stav hry pı¡kazem ZAPSAT a pı¡çtØ, a§ budete m¡t
+chuœ se k MMM vr tit, se pı¡kazem OBNOVIT dostanete tam, kde jste skonŸili.
+Dalç¡ u§iteŸn  slova, kter  V m doporuŸ¡me, jsou POMOC, ZAZNAMENAT KL’¬E a
+SKàRE.A malì dodatek:l=vlevo,p=vpravo,f=vpıed,b=vzad,v=vìchod,z=z pad,s=sever,
+j=jih,jit=jit.
+
+
+
