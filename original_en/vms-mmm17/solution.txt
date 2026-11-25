@@ -1,0 +1,452 @@
+mystery
+46
+w 
+s 
+open gate
+take lantern
+s 
+n
+n 
+e 
+n 
+turn on lantern
+f
+score points
+u
+f
+Take compass
+turn off lantern 
+s
+d
+n
+w
+take candle
+e 
+take gun
+s 
+light fire
+u
+drop candle
+d
+s
+e
+u 
+take keys
+n
+drop lantern
+w
+unlock door
+score points
+w
+n
+open curtain
+e
+unlock door
+drop booty
+drop clothes
+f
+take shower
+u
+take xmitter
+take receiver
+s
+drop booty
+f
+open curtain
+take lantern
+r
+turn on lantern
+r
+take clothes
+take keys
+take compass
+take gun
+score points
+s
+d
+e 
+move king
+take gauntlet
+n 
+d 
+look
+s
+unlock door
+s 
+n
+u
+turn off lantern
+s
+w
+take bullet
+s
+s
+w
+w 
+s
+w
+e
+score points
+e
+e
+n
+e
+n
+s
+e
+e
+s
+s
+n
+n
+e
+e
+s
+s
+w
+w
+s
+n
+w
+n
+take knife
+s
+score points
+e
+s
+s
+w
+d
+turn on lantern
+turn off lantern
+u
+take cross
+take candle
+drink wine
+s
+d
+e
+look
+s
+e
+w
+n
+open coffin
+w
+u
+u
+n
+score points
+open curtain
+take ring
+drop candle
+take chest
+rub maid
+s
+s
+e
+unlock door
+turn on lantern
+turn off lantern
+e
+open curtain
+w
+e
+s
+n
+n
+unlock door
+n
+e
+s
+d
+open curtain
+score points
+d
+w
+unlock door
+w
+turn on LAntern
+take key
+feed monkey
+turn off lantern
+e
+e
+u
+w
+w
+e
+n
+n
+w
+d
+e
+unlock door
+e
+turn on lantern
+turn off lantern
+w
+score points
+u
+e
+s
+drop chest
+e
+n
+d
+turn on lantern
+take food
+turn off lantern
+u
+s
+w
+n
+n
+n
+n
+e
+e
+s
+look
+n
+n
+n
+score points
+shoot wolf
+w
+d
+u
+e
+s
+w
+w
+w
+w
+w
+n
+s
+e
+n
+n
+w
+w
+s
+s
+s
+e
+n
+e
+score points
+e
+n
+n
+s
+n
+s
+s
+s
+w
+s
+s
+s
+Call police
+e
+d
+u
+turn off lantern
+w
+n
+n
+w
+d
+e
+turn on lantern
+score points
+w
+u
+e
+s
+s
+e
+u
+n
+unlock door
+n
+s
+turn off lantern
+s
+d
+w
+n
+n
+w
+e
+open curtain
+s
+s
+e
+u
+score points
+n
+s
+d
+w
+look
+look
+look
+look
+look
+n
+s
+n
+shoot werewolf
+s
+e
+d
+d
+turn on lantern
+u
+n
+s
+drop knife
+take battery
+u
+score points
+d
+w
+u
+u
+turn off lantern
+d
+d
+s
+d
+n
+u
+w
+n
+n
+w
+d
+d
+turn on lantern
+d
+u
+w
+get amulet
+u
+n
+score points
+d
+w
+w
+w
+u
+s
+s
+e
+u
+drop booty
+take gauntlet
+take keys
+take amulet
+take lantern
+take battery
+take compass
+open crate
+s
+w
+r
+unlock door
+open door
+look
+look
+score points
+r
+w
+n
+d
+d
+take treasure
+place amulet in cavity
+turn amulet
+take amulet
+d
+w
+w
+d
+w
+d
+d
+u
+take necklace
+take diamonds
+d
+e
+u
+move boulders
+move boulders
+score points
+move boulders
+take pearls
+d
+e
+u
+take goblet
+take emerald
+d
+e
+u
+w
+move rocks
+take coins
+n
+u
+u
+u
+s
+e
+e
+open coffin
+w
+w
+d
+score points
+u
+e
+e
+s
+take oilcan
+e
+u
+w
+call taxi
+e
+u
+n
+n
+s
+w
+s
+drop treasure
+take chair
+w
+drop chair
+e
+take treasure
+w
+u
+score points
+u
+oil hinge
+d
+oil hinge
+d
+w
+w
+booty
+look
+look
+look
+look
+look
